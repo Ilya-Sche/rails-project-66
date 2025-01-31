@@ -1,0 +1,39 @@
+name: Ruby on Rails CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Run slim-lint
+        run: |
+          bundle exec slim-lint
+
+      - name: Run minitest tests
+        run: |
+          bundle exec rails test:all
+
+      - name: Run RuboCop
+        run: |
+          bundle exec rubocop
