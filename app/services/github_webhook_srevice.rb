@@ -3,7 +3,7 @@
 class GithubWebhookService
   def initialize(repository)
     @repository = repository
-    @client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+    @client = Octokit::Client.new(access_token: current_user.token)
   end
 
   def add_webhook

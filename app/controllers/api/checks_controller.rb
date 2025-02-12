@@ -44,5 +44,4 @@ class Api::ChecksController < ApplicationController
 
     end
   end
-
 end

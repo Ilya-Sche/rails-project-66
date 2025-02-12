@@ -13,11 +13,15 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  post 'api/checks', to: 'checks#webhook'
   # Defines the root path route ("/")
   root "welcome#index"
 
   resources :repositories do
     resources :checks, only: [:create, :show], controller: 'repository/checks'
   end
+  
+  namespace :api do
+    post 'checks', to: 'checks#webhook'
+  end
+
 end
