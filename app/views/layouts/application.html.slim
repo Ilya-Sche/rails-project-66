@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    title = content_for(:title) || 'Rails Project 66'
+    meta name='viewport' content='width=device-width,initial-scale=1'
+    meta name='apple-mobile-web-app-capable' content='yes'
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = yield :head
+
+    link rel='manifest' href='/manifest.json'
+    link rel='icon' href='/icon.png' type='image/png'
+    link rel='icon' href='/icon.svg' type='image/svg+xml'
+    link rel='apple-touch-icon' href='/icon.png'
+    = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbo-track': 'reload', type: 'module'
+
+  body
+    - flash.each do |key, message|
+      - if key == 'notice'
+        .alert.alert-success.border-success
+          = message
+      - elsif key == 'alert'
+        .alert.alert-danger.border-danger.role = alert
+          = message
+
+    .page-container
+      header.navbar.navbar-expand-lg.navbar-light.bg-light
+        nav.container-fluid
+          .navbar-header.d-flex.align-items-center
+            = link_to t('user.home'), root_path, class: 'navbar-brand text-primary text-decoration-none'
+            = link_to t('Repositories'), repositories_path, class: 'navbar-brand text-primary text-decoration-none'
+
+          - if current_user
+            .ms-auto.d-flex.align-items-center
+              .navbar-text.text-primary.font-weight-bold.fs-4
+                = current_user.email
+              .navbar-text
+                = link_to t('user.logout'), logout_path, method: :delete, class: 'navbar-brand text-primary text-decoration-none'
+          - else
+            = button_to t('user.login'), auth_request_path('github'), data: { turbo: false }, method: :post, class: 'navbar-brand text-primary text-decoration-none'
+    = yield

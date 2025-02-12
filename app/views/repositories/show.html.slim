@@ -1,0 +1,34 @@
+.container.border.p-4.rounded.mt-4
+  .repository-info
+    p
+      strong Название:
+      = @repository.full_name
+    p
+      strong Язык:
+      = @repository.language
+    p
+      strong Дата создания:
+      = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    p
+      strong Дата обновления:
+      = @repository.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+
+.container.border.p-4.rounded.mt-4
+  .table-responsive
+    table.table
+      thead
+        tr
+          th Номер проверки
+          th Коммит
+          th Статус
+          th Дата последней проверки
+
+      tbody
+        - @checks.each do |check|
+          tr
+            td = link_to check.id, repository_check_path(@repository, check)
+            td = link_to check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}"
+            td = check.status.capitalize
+            td = check.created_at.strftime('%Y-%m-%d %H:%M:%S')
+
+= button_to 'Создать проверку', repository_checks_path(@repository)

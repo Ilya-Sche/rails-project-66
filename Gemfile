@@ -20,6 +20,11 @@ gem "cssbundling-rails"
 gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
+gem 'open3'
+gem 'aasm'
+gem 'webmock'
+gem 'dry-container'
+gem 'enumerize'
 gem 'html2slim'
 gem 'simple_form'
 gem 'slim_lint'

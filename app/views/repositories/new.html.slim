@@ -1,0 +1,8 @@
+.container.border.p-4.rounded.mt-4
+
+  = form_with url: repositories_path, method: :post, class: 'w-100' do |form|
+    .form-group
+      = form.label :repository, 'Github', class: 'form-label'
+      = form.select :repo_id, @repositories.map { |repo| ["#{repo.owner.login}/#{repo.name}"] }, {}, class: 'form-control w-100'
+    .mt-3
+      = form.submit 'Выбрать репозиторий', class: 'btn btn-primary w-100'

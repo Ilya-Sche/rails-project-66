@@ -1,0 +1,18 @@
+.container.border.p-4.rounded.mt-4
+  .table-responsive
+    table.table
+      thead
+        tr
+          th Название
+          th Язык
+          th Статус последней проверки
+
+      tbody
+        - @repositories.each do |repository|
+          tr
+            td = link_to repository.name, repository_path(repository)
+            td = repository.language
+            - if repository.checks.any?
+              td = repository.checks.last.status
+
+= link_to 'Add repo', new_repository_path

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  offence_code: MyString
+  message: MyText
+  line: 1
+  file: MyString
+  check: one
+
+two:
+  offence_code: MyString
+  message: MyText
+  line: 1
+  file: MyString
+  check: two

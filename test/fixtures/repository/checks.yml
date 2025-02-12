@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  commit_id: MyString
+  status: MyString
+  repository: one
+
+two:
+  commit_id: MyString
+  status: MyString
+  repository: two

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails/all"
@@ -23,5 +25,6 @@ module RailsProject66
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    routes.default_url_options = { host: ENV['BASE_URL'] }
   end
 end

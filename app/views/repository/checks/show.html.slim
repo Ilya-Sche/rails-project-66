@@ -1,0 +1,45 @@
+.container.border.p-4.rounded.mt-4
+  h1 Проверка #{@check.id}
+
+  p
+  strong Дата создания:
+  = @check.created_at.strftime('%d %B %Y, %H:%M')
+
+  p
+  strong Статус:
+  = @check.status.capitalize
+
+  p
+  strong Прошел проверку:
+  = @check.passed?
+
+  p
+  strong Количество ошибок:
+  = @check.rubocop_errors.count
+
+  p
+  strong ID коммита:
+  = link_to @check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}"
+
+  .container.border.p-4.rounded.mt-4
+    table.table
+      thead
+        tr
+          th Сообщение
+          th Идентификатор правила
+          th Строка и символ
+
+      tbody
+        - @check.rubocop_errors.group_by { |error| error.file.split(':').first }.each do |file, errors|
+          tr
+            td colspan="4"
+              - file_path = file.sub('app/tmp/repos/1', '')
+              - github_url = "https://github.com/#{@repository.full_name}/blob/#{@check.commit_id}/#{file_path}"
+              = link_to file, github_url
+          - errors.each do |error|
+            tr
+              td = error.message
+              td = error.offense_code
+              td = "#{error.line} : #{error.column}"
+
+  = link_to 'Back to repositories', repositories_path(@repository)
