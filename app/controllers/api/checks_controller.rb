@@ -7,6 +7,12 @@ class Api::ChecksController < ApplicationController
     @repository = Repository.find(params[:repository_id])
 
     @api_check = @repository.api_checks.new(commit_id: fetch_latest_commit)
+
+    if @api_check.save
+      redirect_to repository_checks_path(@repository), notice: 'Проверка успешно создана!'
+    else
+      redirect_to repository_checks_path(@repository), alert: 'Не удалось создать проверку.'
+    end
   end
 
   def webhook
@@ -29,7 +35,7 @@ class Api::ChecksController < ApplicationController
   private
 
   def fetch_latest_commit
-    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
+    client = Octokit::Client.new(access_token: current_user.token)
     commits = client.commits(@repository.full_name)
     commits.last.sha
   end
@@ -52,14 +58,10 @@ class Api::ChecksController < ApplicationController
     result = `rubocop --format json`
     rubocop_output = JSON.parse(result)
 
-    @errors = rubocop_output.each do |error|
-      @api_check.rubocop_errors.create
-    end
+    if rubocop_output['errors'].empty?
 
-    if @api_check.errors.any?
-      @api_check.update(status: 'failed', passed: false)
     else
-      @api_check.update(status: 'completed', passed: true)
+
     end
   end
 end
