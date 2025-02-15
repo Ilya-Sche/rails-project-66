@@ -8,7 +8,6 @@ class Repository::Check < ApplicationRecord
   belongs_to :repository
   has_many :rubocop_errors
 
-
   aasm column: :status do
     state :pending, initial: true
     state :in_progress
@@ -24,7 +23,7 @@ class Repository::Check < ApplicationRecord
     end
 
     event :fail_check do
-      transitions from: [:pending, :in_progress], to: :failed
+      transitions from: %i[pending in_progress], to: :failed
     end
   end
 end

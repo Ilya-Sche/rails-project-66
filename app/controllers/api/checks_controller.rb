@@ -3,6 +3,12 @@
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  def create
+    @repository = Repository.find(params[:repository_id])
+
+    @api_check = @repository.checks.new
+  end
+
   def webhook
     payload = request.body.read
 
@@ -35,19 +41,19 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    @check.update(status: :in_progress)
+    @api_check.update(status: :in_progress)
 
     result = `rubocop --format json`
     rubocop_output = JSON.parse(result)
 
     @errors = rubocop_output.each do |error|
-      @check.rubocop_errors.create
+      @api_check.rubocop_errors.create
     end
 
-    if @check.errors.any?
-      @check.update(status: 'failed', passed: false)
+    if @api_check.errors.any?
+      @api_check.update(status: 'failed', passed: false)
     else
-      @check.update(status: 'completed', passed: true)
+      @api_check.update(status: 'completed', passed: true)
     end
   end
 end
