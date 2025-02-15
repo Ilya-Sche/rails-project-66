@@ -3,6 +3,7 @@
 class Repository < ApplicationRecord
   belongs_to :user
   has_many :checks, class_name: 'Repository::Check'
+  has_many :api_checks, class_name: 'Api::Check'
 
   extend Enumerize
   enumerize :language, in: ['Ruby'], default: 'Ruby', predicates: true

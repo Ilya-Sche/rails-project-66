@@ -35,14 +35,19 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
+    @check.update(status: :in_progress)
+
     result = `rubocop --format json`
-    debugger
     rubocop_output = JSON.parse(result)
 
-    if rubocop_output['errors'].empty?
+    @errors = rubocop_output.each do |error|
+      @check.rubocop_errors.create
+    end
 
+    if @check.errors.any?
+      @check.update(status: 'failed', passed: false)
     else
-
+      @check.update(status: 'completed', passed: true)
     end
   end
 end
