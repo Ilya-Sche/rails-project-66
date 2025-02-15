@@ -3,7 +3,6 @@
 require 'open3'
 
 class Repository::ChecksController < ApplicationController
-
   def show
     @repository = Repository.find(params[:repository_id])
     @check = @repository.checks.find(params[:id])
@@ -27,39 +26,35 @@ class Repository::ChecksController < ApplicationController
   private
 
   def fetch_repository_language
-    client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
     repo = client.repo(@repository.full_name)
     repo.language
   end
 
   def fetch_latest_commit
-    client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
     commits = client.commits(@repository.full_name)
     commits.last.sha
   end
 
   def start_rubocop_check_in_background(language)
-    Thread.new do
-      begin
-        @check.update(status: :in_progress)
-        clone_repo
-          if language == 'Ruby'
-            run_rubocop
-          else language == 'JavaScript'
-            run_eslint
-          end
-
-          if @check.errors.any?
-            @check.update(status: 'failed', passed: false)
-          else
-            @check.update(status: 'completed', passed: true)
-          end
-
-      rescue StandardError => e
-        Rails.logger.error "Ошибка при проверке репозитория: #{e.message}"
-        @check.update(status: 'failed', passed: false)
-      end
+    @check.update(status: :in_progress)
+    clone_repo
+    if language == 'Ruby'
+      run_rubocop
+    else
+      language == 'JavaScript'
+      run_eslint
     end
+
+    if @check.errors.any?
+      @check.update(status: 'failed', passed: false)
+    else
+      @check.update(status: 'completed', passed: true)
+    end
+  rescue StandardError => e
+    Rails.logger.error "Ошибка при проверке репозитория: #{e.message}"
+    @check.update(status: 'failed', passed: false)
   end
 
   def clone_repo
@@ -71,7 +66,7 @@ class Repository::ChecksController < ApplicationController
   def run_rubocop
     repo_path = Rails.root.join('tmp', 'repos', @repository.id.to_s)
 
-    stdout, stderr, status = Open3.capture3("rubocop #{repo_path}")
+    stdout, stderr, status = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
 
     Rails.logger.info "Результат RuboCop:\n#{stdout}"
     Rails.logger.error "Ошибки RuboCop:\n#{stderr}" if stderr.present?
@@ -81,7 +76,7 @@ class Repository::ChecksController < ApplicationController
       @check.rubocop_errors.create(
         file: error[:file],
         line: error[:line],
-        offense_code: error[:offense_code], 
+        offense_code: error[:offense_code],
         message: error[:message],
         column: error[:column]
       )
@@ -90,29 +85,29 @@ class Repository::ChecksController < ApplicationController
 
   def parse_rubocop_output(stdout)
     @errors = []
-  
+
     stdout.each_line do |line|
-      if match = line.match(/^(.*):(\d+):(\d+):\s*(C:\s*)?\[(Correctable)\]\s*(.*?):\s*(.*)/)
-        file = match[1]
-        line = match[2]
-        column = match[3]
-        offense_code = match[6]
-        message = match[7] 
-  
-        @errors << { file: , line: , message: , offense_code: , column: }
-      end
+      next unless match = line.match(/^(.*):(\d+):(\d+):\s*(C:\s*)?\[(Correctable)\]\s*(.*?):\s*(.*)/)
+
+      file = match[1]
+      line = match[2]
+      column = match[3]
+      offense_code = match[6]
+      message = match[7]
+
+      @errors << { file:, line:, message:, offense_code:, column: }
     end
-  
+
     @errors
   end
 
   def run_eslint
     @errors = []
 
-    repo_path = Rails.root.join('app', 'tmp', 'repos', '1')
-  
+    repo_path = Rails.root.join('app/tmp/repos/1')
+
     command = "node_modules/eslint/bin/eslint.js #{repo_path} --format=json --config ./.eslintrc.yml  --no-eslintrc"
-  
+
     stdout, stderr, status = Open3.capture3("sh -c '#{command}'")
     Rails.logger.info "Результат ESLint:\n#{stdout}"
     Rails.logger.error "Ошибки ESLint:\n#{stderr}" if stderr.present?
@@ -125,7 +120,7 @@ class Repository::ChecksController < ApplicationController
         offense_code: error[:offense_code],
         message: error[:message]
       )
-      @errors << { file: , line: , message: , offense_code: , column: }
+      @errors << { file:, line:, message:, offense_code:, column: }
     end
     @errors
   end

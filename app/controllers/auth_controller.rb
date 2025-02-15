@@ -20,11 +20,8 @@ class AuthController < ApplicationController
 
   def find_or_create(auth)
     user = User.find_or_initialize_by(email: auth[:info][:email].downcase)
-
-    return user if user.persisted?
-
     user.assign_attributes(build_auth_user_params(auth))
-
+    user.save!
     user
   end
 

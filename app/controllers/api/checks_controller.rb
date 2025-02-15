@@ -11,7 +11,7 @@ class Api::ChecksController < ApplicationController
     when 'push'
       process_push_event(payload)
     else
-      render json: { error: 'Unsupported event' }, status: 400
+      render json: { error: 'Unsupported event' }, status: :bad_request
     end
   end
 
@@ -25,23 +25,33 @@ class Api::ChecksController < ApplicationController
   def process_push_event(payload)
     data = JSON.parse(payload)
 
-    repository = data['repository']['name']
+    repository_name = data['repository']['name']
     ref = data['ref']
     commits = data['commits']
 
+    repository = Repository.find_by(name: repository_name)
     run_rubocop_check(repository, commits)
-    
-    render json: { message: 'Webhook processed successfully' }, status: 200
+
+    render json: { message: 'Webhook processed successfully' }, status: :ok
   end
 
   def run_rubocop_check(repository, commits)
-    result = `rubocop --format json`
-    rubocop_output = JSON.parse(result)
+    @check = repository.checks.create(status: 'in_progress', passed: nil)
+    repo_path = Rails.root.join('tmp', 'repos', repository.name)
 
-    if rubocop_output['errors'].empty?
-      
-    else
+    unless File.exist?(repo_path)
+      `git clone https://github.com/#{repository.full_name} #{repo_path}`
+    end
 
+    Dir.chdir(repo_path) do
+      result = `rubocop --format -json`
+      rubocop_output = JSON.parse(result)
+
+      if rubocop_output['errors'].empty?
+        @check.update(status: 'completed', passed: true)
+      else
+        @check.update(status: 'failed', passed: false)
+      end
     end
   end
 end
