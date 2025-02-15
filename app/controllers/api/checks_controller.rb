@@ -36,7 +36,7 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    repo_path = Rails.root.join('tmp', 'repos', repository.name)
+    repo_path = Rails.root.join('tmp', 'repos', repository.id.to_s)
 
     unless File.exist?(repo_path)
       `git clone https://github.com/#{repository.full_name} #{repo_path}`
