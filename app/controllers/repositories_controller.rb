@@ -14,7 +14,6 @@ class RepositoriesController < ApplicationController
 
   def new
     client = Octokit::Client.new(access_token: current_user.token, auto_paginate: true)
-    debugger
     @repositories = client.repos
   end
 

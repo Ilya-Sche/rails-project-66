@@ -26,10 +26,10 @@ class Api::ChecksController < ApplicationController
     data = JSON.parse(payload)
 
     repository_name = data['repository']['name']
-    ref = data['ref']
+    owner_name = data['repository']['owner']['name']
     commits = data['commits']
 
-    repository = Repository.find_by(name: repository_name)
+    repository = Repository.find_by(name: repository_name, owner: owner_name)
 
     run_rubocop_check(repository, commits)
 
