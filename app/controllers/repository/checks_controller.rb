@@ -26,13 +26,13 @@ class Repository::ChecksController < ApplicationController
   private
 
   def fetch_repository_language
-    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
+    client = Octokit::Client.new(access_token: current_user.token)
     repo = client.repo(@repository.full_name)
     repo.language
   end
 
   def fetch_latest_commit
-    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
+    client = Octokit::Client.new(access_token: current_user.token)
     commits = client.commits(@repository.full_name)
     commits.last.sha
   end

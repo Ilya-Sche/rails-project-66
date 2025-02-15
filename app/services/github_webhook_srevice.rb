@@ -12,8 +12,8 @@ class GithubWebhookService
       active: true,
       events: ['push'],
       config: {
-        url: "#{ENV.fetch('BASE_URL')}/api/checks",
-        content_type: 'json'
+        url: "#{ENV.fetch('BASE_URL')}/api/checks"
+        # content_type: 'json'
       }
     }
 

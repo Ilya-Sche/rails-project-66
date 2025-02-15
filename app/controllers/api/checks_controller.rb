@@ -29,6 +29,8 @@ class Api::ChecksController < ApplicationController
     ref = data['ref']
     commits = data['commits']
 
+    repository = Repository.find_by(name: repository_name)
+
     run_rubocop_check(repository, commits)
 
     render json: { message: 'Webhook processed successfully' }, status: :ok
