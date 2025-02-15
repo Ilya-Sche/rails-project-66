@@ -6,7 +6,7 @@ class Api::ChecksController < ApplicationController
   def create
     @repository = Repository.find(params[:repository_id])
 
-    @api_check = @repository.checks.new(commit_id: fetch_latest_commit)
+    @api_check = @repository.api_checks.new(commit_id: fetch_latest_commit)
   end
 
   def webhook
