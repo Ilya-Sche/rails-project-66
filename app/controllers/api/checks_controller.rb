@@ -36,7 +36,6 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    @check = repository.checks.create(status: 'in_progress', passed: nil)
     repo_path = Rails.root.join('tmp', 'repos', repository.name)
 
     unless File.exist?(repo_path)
@@ -48,9 +47,7 @@ class Api::ChecksController < ApplicationController
       rubocop_output = JSON.parse(result)
 
       if rubocop_output['errors'].empty?
-        @check.update(status: 'completed', passed: true)
       else
-        @check.update(status: 'failed', passed: false)
       end
     end
   end
