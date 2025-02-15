@@ -25,11 +25,11 @@ class Api::ChecksController < ApplicationController
   def process_push_event(payload)
     data = JSON.parse(payload)
 
-    repository = data['repository']['name']
+    repository_name = data['repository']['name']
     ref = data['ref']
     commits = data['commits']
 
-    repository = Repository.find_by(name: repository.full_name)
+    repository = Repository.find_by(name: repository_name)
 
     run_rubocop_check(repository, commits)
 
