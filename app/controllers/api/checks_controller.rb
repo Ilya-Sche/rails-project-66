@@ -29,7 +29,7 @@ class Api::ChecksController < ApplicationController
     ref = data['ref']
     commits = data['commits']
 
-    repository = Repository.find_by(name: repository_name)
+    repository = Repository.find_by(name: repository.full_name)
 
     run_rubocop_check(repository, commits)
 
