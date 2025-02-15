@@ -6,7 +6,7 @@ class Api::ChecksController < ApplicationController
   def create
     @repository = Repository.find(params[:repository_id])
 
-    @api_check = @repository.checks.new
+    @api_check = @repository.checks.new(commit_id: fetch_latest_commit)
   end
 
   def webhook
@@ -27,6 +27,12 @@ class Api::ChecksController < ApplicationController
   end
 
   private
+
+  def fetch_latest_commit
+    client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
+    commits = client.commits(@repository.full_name)
+    commits.last.sha
+  end
 
   def process_push_event(payload)
     data = JSON.parse(payload)
