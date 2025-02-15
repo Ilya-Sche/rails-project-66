@@ -29,17 +29,19 @@ class Api::ChecksController < ApplicationController
     ref = data['ref']
     commits = data['commits']
 
-    repository = Repository.find_by(name: repository_name)
+    @repository = Repository.find_by(name: repository_name)
     run_rubocop_check(repository, commits)
 
     render json: { message: 'Webhook processed successfully' }, status: :ok
   end
 
   def run_rubocop_check(repository, commits)
-    repo_path = Rails.root.join('tmp', 'repos', repository.id.to_s)
+    @repository = Repository.find_by(name: repository_name)
+
+    repo_path = Rails.root.join('tmp', 'repos', @repository.id.to_s)
 
     unless File.exist?(repo_path)
-      `git clone https://github.com/#{repository.full_name} #{repo_path}`
+      `git clone https://github.com/#{@repository.full_name} #{repo_path}`
     end
 
     Dir.chdir(repo_path) do
