@@ -47,10 +47,10 @@ class Repository::ChecksController < ApplicationController
       run_eslint
     end
 
-    if @check.errors.any?
-      @check.update(status: 'failed', passed: false)
-    else
+    if @check.rubocop_errors.empty?
       @check.update(status: 'completed', passed: true)
+    else
+      @check.update(status: 'failed', passed: false)
     end
   rescue StandardError => e
     Rails.logger.error "Ошибка при проверке репозитория: #{e.message}"

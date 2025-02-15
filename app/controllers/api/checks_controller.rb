@@ -18,7 +18,7 @@ class Api::ChecksController < ApplicationController
   def add_webhooks_to_existing_repositories
     Repository.all.each do |repository|
       webhook_service = GithubWebhookService.new(repository)
-      webhook_service.webhook
+      webhook_service.add_webhook
     end
   end
 
