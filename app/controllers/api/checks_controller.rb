@@ -3,18 +3,6 @@
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  def create
-    @repository = Repository.find(params[:repository_id])
-
-    @api_check = @repository.api_checks.new(commit_id: fetch_latest_commit)
-
-    if @api_check.save
-      redirect_to repository_checks_path(@repository), notice: 'Проверка успешно создана!'
-    else
-      redirect_to repository_checks_path(@repository), alert: 'Не удалось создать проверку.'
-    end
-  end
-
   def webhook
     payload = request.body.read
 
@@ -34,12 +22,6 @@ class Api::ChecksController < ApplicationController
 
   private
 
-  def fetch_latest_commit
-    client = Octokit::Client.new(access_token: current_user.token)
-    commits = client.commits(@repository.full_name)
-    commits.last.sha
-  end
-
   def process_push_event(payload)
     data = JSON.parse(payload)
 
@@ -53,15 +35,13 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    @api_check.update(status: :in_progress)
-
     result = `rubocop --format json`
     rubocop_output = JSON.parse(result)
 
-    if rubocop_output['errors'].empty?
-
+    if rubocop_output.empty?
+      render json:, status: :ok
     else
-
+      render json:, status: :bad_request
     end
   end
 end
