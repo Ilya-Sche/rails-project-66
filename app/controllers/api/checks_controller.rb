@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Api::ChecksController < ApplicationController
-  include GithubWebhookService
   skip_before_action :verify_authenticity_token
+  require_dependency 'github_webhook_service'
 
   def webhook
     payload = request.body.read
