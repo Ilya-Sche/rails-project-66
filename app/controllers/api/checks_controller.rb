@@ -2,6 +2,7 @@
 
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
+
   def webhook
     payload = request.body.read
 
@@ -9,7 +10,19 @@ class Api::ChecksController < ApplicationController
 
     case event
     when 'push'
-      process_push_event(payload)
+      service = GithubWebhookService.new(payload)
+
+      begin
+        result = service.process_push_event
+
+        if result[:status] == :ok
+          render json: { message: 'Webhook processed successfully' }, status: :ok
+        else
+          render json: { error: 'Failed to process webhook', details: result[:errors] }, status: :bad_request
+        end
+      rescue StandardError => e
+        render json: { error: "Error processing webhook: #{e.message}" }, status: :internal_server_error
+      end
     else
       render json: { error: 'Unsupported event' }, status: :bad_request
     end
@@ -25,17 +38,9 @@ class Api::ChecksController < ApplicationController
 
     repository = Repository.find_by(name: repository_name)
 
-    if repository
-      result = run_rubocop_check(repository, commits)
+    run_rubocop_check(repository, commits)
 
-      if result[:status] == :ok
-        render json: { message: 'Webhook processed successfully' }, status: :ok
-      else
-        render json: { error: 'RuboCop check failed', details: result[:errors] }, status: :bad_request
-      end
-    else
-      render json: { error: 'Repository not found' }, status: :not_found
-    end
+    render json: { message: 'Webhook processed successfully' }, status: :ok
   end
 
   def run_rubocop_check(repository, commits)
@@ -43,9 +48,9 @@ class Api::ChecksController < ApplicationController
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
-      { status: :ok }
+      render json:, status: :ok
     else
-      { status: :bad_request, errors: rubocop_output }
+      render json:, status: :bad_request, errors: rubocop_output
     end
   end
 end
