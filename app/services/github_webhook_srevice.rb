@@ -12,7 +12,7 @@ class GithubWebhookService
       active: true,
       events: ['push'],
       config: {
-        url: 'https://1a54-195-54-33-188.ngrok-free.app',
+        url: 'https://1a54-195-54-33-188.ngrok-free.app/webhook',
         content_type: 'json'
       }
     }
