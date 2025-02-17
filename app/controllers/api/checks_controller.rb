@@ -2,12 +2,11 @@
 
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
-
   def webhook
-    debugger
     payload = request.body.read
 
     event = request.headers['X-GitHub-Event']
+
     case event
     when 'push'
       process_push_event(payload)
@@ -26,9 +25,17 @@ class Api::ChecksController < ApplicationController
 
     repository = Repository.find_by(name: repository_name)
 
-    run_rubocop_check(repository, commits)
+    if repository
+      result = run_rubocop_check(repository, commits)
 
-    render json: { message: 'Webhook processed successfully' }, status: :ok
+      if result[:status] == :ok
+        render json: { message: 'Webhook processed successfully' }, status: :ok
+      else
+        render json: { error: 'RuboCop check failed', details: result[:errors] }, status: :bad_request
+      end
+    else
+      render json: { error: 'Repository not found' }, status: :not_found
+    end
   end
 
   def run_rubocop_check(repository, commits)
@@ -36,9 +43,9 @@ class Api::ChecksController < ApplicationController
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
-      render json:, status: :ok
+      { status: :ok }
     else
-      render json:, status: :bad_request
+      { status: :bad_request, errors: rubocop_output }
     end
   end
 end
