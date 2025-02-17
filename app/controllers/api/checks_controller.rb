@@ -2,30 +2,23 @@
 
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
-  require_dependency 'app/services/github_webhook_service.rb'
 
   def webhook
     payload = request.body.read
 
     event = request.headers['X-GitHub-Event']
-
     case event
     when 'push'
-      service = GithubWebhookService.new(payload)
-
-      begin
-        result = service.process_push_event
-
-        if result[:status] == :ok
-          render json: { message: 'Webhook processed successfully' }, status: :ok
-        else
-          render json: { error: 'Failed to process webhook', details: result[:errors] }, status: :bad_request
-        end
-      rescue StandardError => e
-        render json: { error: "Error processing webhook: #{e.message}" }, status: :internal_server_error
-      end
+      process_push_event(payload)
     else
       render json: { error: 'Unsupported event' }, status: :bad_request
+    end
+  end
+
+  def add_webhooks_to_existing_repositories
+    Repository.all.each do |repository|
+      webhook_service = GithubWebhookService.new(repository)
+      webhook_service.add_webhook
     end
   end
 

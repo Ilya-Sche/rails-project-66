@@ -8,7 +8,7 @@ class GithubWebhookService
 
   def add_webhooks_for_user_repos
     repos = @client.repos(@user.email)
-
+    debugger
     repos.each do |repo|
       add_webhook(repo)
     end
