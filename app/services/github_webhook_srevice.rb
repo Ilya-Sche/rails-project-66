@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
 class GithubWebhookService
-  def initialize(repository)
-    @repository = repository
-    @client = Octokit::Client.new(access_token: current_user.token)
+  def initialize(user)
+    @user = user
+    @client = Octokit::Client.new(access_token: user.token)
   end
 
   def add_webhooks_for_user_repos
     repos = @client.repos(@user.email)
 
     repos.each do |repo|
-      add_webhook_to_repo(repo)
+      add_webhook(repo)
     end
   end
 
   private
 
-  def add_webhook
+  def add_webhook(repo)
     config = {
       url: 'https://1a54-195-54-33-188.ngrok-free.app/api/checks',
       content_type: 'json'
@@ -27,6 +27,6 @@ class GithubWebhookService
       active: true
     }
 
-    @client.create_hook(@repository.full_name, 'web', config, options)
+    @client.create_hook(repo.full_name, 'web', config, options)
   end
 end

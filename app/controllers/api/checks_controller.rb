@@ -4,6 +4,7 @@ class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def webhook
+    debugger
     payload = request.body.read
 
     event = request.headers['X-GitHub-Event']
