@@ -2,7 +2,7 @@
 
 class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
-  require_dependency 'github_webhook_service'
+  require_dependency 'app/services/github_webhook_service.rb'
 
   def webhook
     payload = request.body.read
