@@ -11,7 +11,7 @@ class Api::ChecksController < ApplicationController
     when 'push'
       process_push_event(payload)
     else
-      render json: { error: 'Unsupported event' }, status: :bad_request
+      { error: 'Unsupported event', status: :bad_request }
     end
   end
 
@@ -34,7 +34,7 @@ class Api::ChecksController < ApplicationController
 
     run_rubocop_check(repository, commits)
 
-    render json: { message: 'Webhook processed successfully' }, status: :ok
+    { message: 'Webhook processed successfully', status: :ok }
   end
 
   def run_rubocop_check(repository, commits)
@@ -42,9 +42,9 @@ class Api::ChecksController < ApplicationController
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
-      render json:, status: :ok
+      { status: :ok }
     else
-      render json:, status: :bad_request, errors: rubocop_output
+      { status: :bad_request, errors: rubocop_output }
     end
   end
 end
