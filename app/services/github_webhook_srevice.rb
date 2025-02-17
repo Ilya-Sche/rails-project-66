@@ -7,16 +7,16 @@ class GithubWebhookService
   end
 
   def add_webhook
-    payload = {
-      name: 'web',
-      active: true,
-      events: ['push'],
-      config: {
-        url: 'https://1a54-195-54-33-188.ngrok-free.app/api/checks',
-        content_type: 'json'
-      }
+    config = {
+      url: 'https://1a54-195-54-33-188.ngrok-free.app/api/checks',
+      content_type: 'json'
     }
 
-    @client.create_hook(@repository.full_name, payload)
+    options = {
+      events: ['push'],
+      active: true
+    }
+
+    @client.create_hook(@repository.full_name, 'web', config, options)
   end
 end
