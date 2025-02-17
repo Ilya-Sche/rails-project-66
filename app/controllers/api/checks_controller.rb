@@ -15,13 +15,6 @@ class Api::ChecksController < ApplicationController
     end
   end
 
-  def add_webhooks_to_existing_repositories
-    Repository.find_each do |repository|
-      webhook_service = GithubWebhookService.new(repository)
-      webhook_service.add_webhook
-    end
-  end
-
   private
 
   def process_push_event(payload)

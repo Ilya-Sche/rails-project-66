@@ -6,6 +6,16 @@ class GithubWebhookService
     @client = Octokit::Client.new(access_token: current_user.token)
   end
 
+  def add_webhooks_for_user_repos
+    repos = @client.repos(@user.email)
+
+    repos.each do |repo|
+      add_webhook_to_repo(repo)
+    end
+  end
+
+  private
+
   def add_webhook
     config = {
       url: 'https://1a54-195-54-33-188.ngrok-free.app/api/checks',
