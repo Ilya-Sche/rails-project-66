@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
 class GithubWebhookService
-  def initialize(user)
-    @user = user
-    @client = Octokit::Client.new(access_token: user.token)
-  end
-
   def add_webhooks_for_user_repos
-    repos = @client.repos(@user.email)
-    debugger
+    @client = Octokit::Client.new(access_token: current_user.token)
+    repos = @client.repos
     repos.each do |repo|
       add_webhook(repo)
     end
