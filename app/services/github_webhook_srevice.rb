@@ -22,6 +22,6 @@ class GithubWebhookService
       active: true
     }
 
-    @client.create_hook(repo.full_name, 'web', config, options)
+    @client.create_hook(repo, repo.full_name, config, options)
   end
 end

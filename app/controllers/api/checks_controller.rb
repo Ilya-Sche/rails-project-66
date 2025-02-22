@@ -37,7 +37,7 @@ class Api::ChecksController < ApplicationController
     if rubocop_output.empty?
       { status: :ok }
     else
-      { status: :bad_request, errors: }
+      { status: :bad_request, errors: rubocop_output }
     end
   end
 end
