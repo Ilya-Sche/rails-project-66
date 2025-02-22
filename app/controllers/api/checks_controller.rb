@@ -15,13 +15,6 @@ class Api::ChecksController < ApplicationController
     end
   end
 
-  def add_webhooks_to_existing_repositories
-    Repository.all.each do |repository|
-      webhook_service = GithubWebhookService.new(repository)
-      webhook_service.add_webhook
-    end
-  end
-
   private
 
   def process_push_event(payload)
@@ -44,7 +37,7 @@ class Api::ChecksController < ApplicationController
     if rubocop_output.empty?
       { status: :ok }
     else
-      { status: :bad_request, errors: rubocop_output }
+      { status: :bad_request, errors: }
     end
   end
 end
