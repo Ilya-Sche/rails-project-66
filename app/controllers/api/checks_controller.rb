@@ -36,15 +36,7 @@ class Api::ChecksController < ApplicationController
 
     return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
 
-    formatted_output = rubocop_output.flat_map do |file|
-      offenses = file['offenses']
-
-      offenses.map do |offense|
-        line = offense['location']['start_line']
-        message = offense['message']
-        severity = offense['severity']
-        "Line #{line}: #{message} (Severity: #{severity})"
-      end
+    formatted_output = rubocop_output.each_line do |line|
     end.join("\n\n")
 
     Rails.logger.info("RuboCop output:\n#{formatted_output}")
