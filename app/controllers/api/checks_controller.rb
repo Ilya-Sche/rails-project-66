@@ -32,17 +32,12 @@ class Api::ChecksController < ApplicationController
 
   def run_rubocop_check(repository, commits)
     result = `rubocop --config ./.rubocop.yml --format json`
-
-    Rails.logger.info("RuboCop output: #{result}")
-
     rubocop_output = JSON.parse(result)
 
     return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
 
     formatted_output = rubocop_output.flat_map do |file|
-      file_name = file['filename']
-
-      offenses = file['offenses'].is_a?(Array) ? file['offenses'] : []
+      offenses = file['offenses']
 
       offenses.map do |offense|
         line = offense['location']['start_line']
