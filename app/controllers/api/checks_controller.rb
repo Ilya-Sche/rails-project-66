@@ -33,14 +33,9 @@ class Api::ChecksController < ApplicationController
   def run_rubocop_check(repository, commits)
     result = `rubocop --config ./.rubocop.yml --format json`
 
-    Rails.logger.info("RuboCop raw output: #{result[0, 100]}")
+    Rails.logger.info("RuboCop output: #{result}")
 
-    begin
-      rubocop_output = JSON.parse(result)
-    rescue JSON::ParserError => e
-      Rails.logger.error("Error parsing RuboCop JSON output: #{e.message}")
-      return { status: :internal_server_error, error: 'Failed to parse RuboCop output' }
-    end
+    rubocop_output = JSON.parse(result)
 
     return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
 
@@ -57,8 +52,8 @@ class Api::ChecksController < ApplicationController
       end
     end.join("\n\n")
 
-    Rails.logger.info("RuboCop formatted output:\n#{formatted_output[0, 100]}")
+    Rails.logger.info("RuboCop output:\n#{formatted_output}")
 
-    { status: :bad_request, errors: formatted_output }
+    { status: :bad_request, errors: formatted_output } if formatted_output?
   end
 end
