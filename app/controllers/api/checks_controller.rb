@@ -31,11 +31,15 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    result = `rubocop --format json`
+    config_path = Rails.root.join('config/rubocop/.rubocop.yml')
+
+    result = `rubocop --config #{config_path} --format json`
+
+    Rails.logger.info("RuboCop output: #{result}")
+
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
-      Rails.logger.info('RuboCop: No offenses found')
       { status: :ok, message: 'No issues found' }
     else
       formatted_output = rubocop_output.map do |file|
@@ -49,7 +53,6 @@ class Api::ChecksController < ApplicationController
 
         "#{file_name}:\n" + offenses.join("\n")
       end.join("\n\n")
-
       Rails.logger.info("RuboCop output:\n#{formatted_output}")
       { status: :bad_request, errors: formatted_output }
     end
