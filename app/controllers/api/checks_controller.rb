@@ -31,9 +31,7 @@ class Api::ChecksController < ApplicationController
   end
 
   def run_rubocop_check(repository, commits)
-    config_path = Rails.root.join('config/rubocop/.rubocop.yml')
-
-    result = `rubocop --config #{config_path} --format json`
+    result = `rubocop --config ./.rubocop.yml --format json`
 
     Rails.logger.info("RuboCop output: #{result}")
 
