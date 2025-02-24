@@ -32,6 +32,9 @@ class Api::ChecksController < ApplicationController
 
   def run_rubocop_check(repository, commits)
     result = `rubocop --format json`
+
+    Rails.logger.info("RuboCop output: #{result}")
+
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
