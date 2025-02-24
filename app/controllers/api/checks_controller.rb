@@ -35,24 +35,30 @@ class Api::ChecksController < ApplicationController
 
     Rails.logger.info("RuboCop output: #{result}")
 
-    rubocop_output = JSON.parse(result)
-
-    if rubocop_output.empty?
-      { status: :ok, message: 'No issues found' }
-    else
-      formatted_output = rubocop_output.map do |file|
-        file_name = file['filename']
-        offenses = file['offenses'].map do |offense|
-          line = offense['location']['start_line']
-          message = offense['message']
-          severity = offense['severity']
-          "Line #{line}: #{message} (Severity: #{severity})"
-        end
-
-        "#{file_name}:\n" + offenses.join("\n")
-      end.join("\n\n")
-      Rails.logger.info("RuboCop output:\n#{formatted_output}")
-      { status: :bad_request, errors: formatted_output }
+    begin
+      rubocop_output = JSON.parse(result)
+    rescue JSON::ParserError => e
+      Rails.logger.error("Error parsing RuboCop JSON output: #{e.message}")
+      return { status: :internal_server_error, error: 'Failed to parse RuboCop output' }
     end
+
+    return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
+
+    formatted_output = rubocop_output.flat_map do |file|
+      file_name = file['filename']
+
+      offenses = file['offenses'].is_a?(Array) ? file['offenses'] : []
+
+      offenses.map do |offense|
+        line = offense['location']['start_line']
+        message = offense['message']
+        severity = offense['severity']
+        "Line #{line}: #{message} (Severity: #{severity})"
+      end
+    end.join("\n\n")
+
+    Rails.logger.info("RuboCop output:\n#{formatted_output}")
+
+    { status: :bad_request, errors: formatted_output }
   end
 end
