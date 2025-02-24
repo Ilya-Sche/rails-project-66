@@ -36,7 +36,7 @@ class Api::ChecksController < ApplicationController
 
     return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
 
-    formatted_output = rubocop_output.each_line do |line|
+    formatted_output = rubocop_output.each_file do |file|
     end.join("\n\n")
 
     Rails.logger.info("RuboCop output:\n#{formatted_output}")
