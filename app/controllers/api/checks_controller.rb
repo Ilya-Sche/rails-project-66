@@ -38,9 +38,15 @@ class Api::ChecksController < ApplicationController
     rubocop_output = JSON.parse(result)
 
     if rubocop_output.empty?
-      { status: :ok }
+      { status: :ok, message: 'No issues found' }
     else
-      { status: :bad_request, errors: rubocop_output }
+      formatted_errors = rubocop_output.map do |file|
+        {
+          file: file['filename'],
+          offenses: file['offenses'].map { |offense| "#{offense['message']} (Line: #{offense['location']['start_line']})" }
+        }
+      end
+      { status: :bad_request, errors: formatted_errors }
     end
   end
 end

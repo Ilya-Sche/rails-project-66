@@ -16,7 +16,6 @@ class GithubWebhookService
   private
 
   def add_webhook(repo)
-    check_webhooks(repo)
     name = 'web'
     config = {
       url: 'https://fa62-195-54-33-188.ngrok-free.app/api/checks',
