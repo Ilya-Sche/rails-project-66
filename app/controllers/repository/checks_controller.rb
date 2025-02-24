@@ -66,7 +66,7 @@ class Repository::ChecksController < ApplicationController
   def run_rubocop
     repo_path = Rails.root.join('tmp', 'repos', @repository.id.to_s)
 
-    stdout, stderr, status = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
+    stdout, stderr = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
 
     Rails.logger.info "Результат RuboCop:\n#{stdout}"
     Rails.logger.error "Ошибки RuboCop:\n#{stderr}" if stderr.present?

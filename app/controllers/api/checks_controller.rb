@@ -33,7 +33,7 @@ class Api::ChecksController < ApplicationController
   def run_rubocop_check(repository, commits)
     result = `rubocop --config ./.rubocop.yml --format json`
 
-    Rails.logger.info("RuboCop output: #{result}")
+    Rails.logger.info("RuboCop raw output: #{result[0, 100]}")
 
     begin
       rubocop_output = JSON.parse(result)
@@ -57,7 +57,7 @@ class Api::ChecksController < ApplicationController
       end
     end.join("\n\n")
 
-    Rails.logger.info("RuboCop output:\n#{formatted_output}")
+    Rails.logger.info("RuboCop formatted output:\n#{formatted_output[0, 100]}")
 
     { status: :bad_request, errors: formatted_output }
   end
