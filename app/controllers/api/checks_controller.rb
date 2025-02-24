@@ -36,17 +36,6 @@ class Api::ChecksController < ApplicationController
 
     return { status: :ok, message: 'No issues found' } if rubocop_output.empty?
 
-    @errors = rubocop_output
-    @errors.each do |error|
-      @check.rubocop_errors.create(
-        file: error[:file],
-        line: error[:line],
-        offense_code: error[:offense_code],
-        message: error[:message],
-        column: error[:column]
-      )
-    end
-
-    { status: :bad_request, errors: @errors } if @errors.any?
+    { status: :bad_request, errors: rubocop_output }
   end
 end
