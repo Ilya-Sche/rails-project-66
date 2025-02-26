@@ -3,8 +3,7 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
 
-  def index
-  end
+  def index; end
 
   def create
     @user = User.find_or_create_by(email: user_params[:email]) do |u|

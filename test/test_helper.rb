@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-ENV["RAILS_ENV"] ||= "test"
-require_relative "../config/environment"
-require "rails/test_help"
+ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
+require 'rails/test_help'
 OmniAuth.config.test_mode = true
 
 module ActiveSupport
@@ -15,6 +15,7 @@ module ActiveSupport
 
     # Add more helper methods to be used by all tests here...
   end
+
   class ActionDispatch::IntegrationTest
     def sign_in(user, _options = {})
       auth_hash = {

@@ -10,16 +10,14 @@ class Repository::ChecksController < ApplicationController
 
   def create
     @repository = Repository.find(params[:repository_id])
-
     @check = @repository.checks.new(commit_id: fetch_latest_commit)
-
     language = fetch_repository_language
 
     if @check.save
-      redirect_to repository_checks_path(@repository), notice: 'Проверка успешно создана!'
+      redirect_to repository_path(@repository), notice: 'Проверка успешно создана!'
       start_rubocop_check_in_background(language)
     else
-      redirect_to repository_checks_path(@repository), alert: 'Не удалось создать проверку.'
+      redirect_to repository_path(@repository), alert: 'Не удалось создать проверку.'
     end
   end
 
@@ -43,33 +41,26 @@ class Repository::ChecksController < ApplicationController
     if language == 'Ruby'
       run_rubocop
     else
-      language == 'JavaScript'
       run_eslint
     end
+
+    cleanup_repo
 
     if @check.rubocop_errors.empty?
       @check.update(status: 'completed', passed: true)
     else
       @check.update(status: 'failed', passed: false)
     end
-  rescue StandardError => e
-    Rails.logger.error "Ошибка при проверке репозитория: #{e.message}"
-    @check.update(status: 'failed', passed: false)
   end
 
   def clone_repo
-    clone_dir = Rails.root.join('tmp', 'repos', @repository.id.to_s)
-    FileUtils.rm_rf(clone_dir)
+    clone_dir = Rails.root.join('tmp', 'repos', @repository.full_name)
     system("git clone https://github.com/#{@repository.full_name}.git #{clone_dir}")
   end
 
   def run_rubocop
-    repo_path = Rails.root.join('tmp', 'repos', @repository.id.to_s)
-
-    stdout, stderr = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
-
-    Rails.logger.info "Результат RuboCop:\n#{stdout}"
-    Rails.logger.error "Ошибки RuboCop:\n#{stderr}" if stderr.present?
+    repo_path = Rails.root.join('tmp', 'repos', @repository.full_name)
+    stdout, _stderr = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
 
     @errors = parse_rubocop_output(stdout)
     @errors.each do |error|
@@ -97,7 +88,6 @@ class Repository::ChecksController < ApplicationController
 
       @errors << { file:, line:, message:, offense_code:, column: }
     end
-
     @errors
   end
 
@@ -105,12 +95,8 @@ class Repository::ChecksController < ApplicationController
     @errors = []
 
     repo_path = Rails.root.join('app/tmp/repos/1')
-
     command = "node_modules/eslint/bin/eslint.js #{repo_path} --format=json --config ./.eslintrc.yml  --no-eslintrc"
-
-    stdout, stderr, status = Open3.capture3("sh -c '#{command}'")
-    Rails.logger.info "Результат ESLint:\n#{stdout}"
-    Rails.logger.error "Ошибки ESLint:\n#{stderr}" if stderr.present?
+    stdout, _stderr = Open3.capture3("sh -c '#{command}'")
 
     @errors = parse_eslint_output(stdout)
     @errors.each do |error|
@@ -134,6 +120,11 @@ class Repository::ChecksController < ApplicationController
         message: error['message']
       }
     end
+  end
+
+  def cleanup_repo
+    clone_dir = Rails.root.join('tmp', 'repos', @repository.full_name)
+    FileUtils.rm_rf(clone_dir)
   end
 
   def check_params

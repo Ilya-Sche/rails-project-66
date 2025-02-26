@@ -20,6 +20,7 @@ class RepositoriesController < ApplicationController
   def create
     client = Octokit::Client.new access_token: current_user.token
     repo = client.repo(params[:repo_id])
+    webhook_service = GithubWebhookService.new(Octokit::Client.new(access_token: current_user.token))
 
     @repository = current_user.repositories.new(
       name: repo.name,
@@ -30,6 +31,7 @@ class RepositoriesController < ApplicationController
       ssh_url: repo.ssh_url
     )
     if @repository.save
+      webhook_service.add_webhook_for_repo(@repository.full_name)
       redirect_to repositories_path, notice: 'Репозиторий успешно добавлен'
     else
       redirect_to new_repository_path, alert: 'Ошибка при добавлении репозитория'

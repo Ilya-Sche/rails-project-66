@@ -2,7 +2,7 @@
 
 class Repository < ApplicationRecord
   belongs_to :user
-  has_many :checks, class_name: 'Repository::Check'
+  has_many :checks, class_name: 'Repository::Check', dependent: :destroy
 
   extend Enumerize
   enumerize :language, in: ['Ruby'], default: 'Ruby', predicates: true

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "boot"
+require_relative 'boot'
 
-require "rails/all"
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -25,6 +25,6 @@ module RailsProject66
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    routes.default_url_options = { host: ENV['BASE_URL'] }
+    routes.default_url_options = { host: ENV.fetch('BASE_URL', nil) }
   end
 end

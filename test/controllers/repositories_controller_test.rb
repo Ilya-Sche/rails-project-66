@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "test_helper"
+require 'test_helper'
 require 'ostruct'
 class RepositoriesControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -9,20 +9,19 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
     @repo = repositories(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get repositories_path
     assert_response :success
     assert_select 'td', @repo.name
     assert_select 'td', @repo.language
   end
 
-  test "should create repository" do
-
+  test 'should create repository' do
     Octokit::Client.class_eval do
-      def repo(repo_id)
-        OpenStruct.new(
+      def repo(_repo_id)
+        Struct.new(
           name: 'Hello-World',
-          id: 12345,
+          id: 12_345,
           full_name: 'octocat/Hello-World',
           language: 'Ruby',
           clone_url: 'https://github.com/octocat/Hello-World.git',
@@ -36,7 +35,7 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
     post repositories_path, params: { repo_id: }
 
     assert_redirected_to repositories_path
-    
+
     repository = @user.repositories.last
     assert_equal 'Hello-World', repository.name
     assert_equal 'octocat/Hello-World', repository.full_name
