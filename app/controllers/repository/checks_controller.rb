@@ -10,26 +10,20 @@ class Repository::ChecksController < ApplicationController
 
   def create
     @repository = Repository.find(params[:repository_id])
-    @check = @repository.checks.new(commit_id: fetch_latest_commit)
-    language = fetch_repository_language
+    @check = @repository.checks.new(commit_id: fetch_commit)
+    language = @repository.language
 
     if @check.save
-      redirect_to repository_path(@repository), notice: 'Проверка успешно создана!'
+      redirect_to repository_path(@repository), notice: I18n.t('check.created')
       start_rubocop_check_in_background(language)
     else
-      redirect_to repository_path(@repository), alert: 'Не удалось создать проверку.'
+      redirect_to repository_path(@repository), alert: I18n.t('check.error')
     end
   end
 
   private
 
-  def fetch_repository_language
-    client = Octokit::Client.new(access_token: current_user.token)
-    repo = client.repo(@repository.full_name)
-    repo.language
-  end
-
-  def fetch_latest_commit
+  def fetch_commit
     client = Octokit::Client.new(access_token: current_user.token)
     commits = client.commits(@repository.full_name)
     commits.last.sha
@@ -78,7 +72,7 @@ class Repository::ChecksController < ApplicationController
     @errors = []
 
     stdout.each_line do |line|
-      next unless match = line.match(/^(.*):(\d+):(\d+):\s*(C:\s*)?\[(Correctable)\]\s*(.*?):\s*(.*)/)
+      next unless (match = line.match(/^(.*):(\d+):(\d+):\s*(C:\s*)?\[(Correctable)\]\s*(.*?):\s*(.*)/))
 
       file = match[1]
       line = match[2]
@@ -125,9 +119,5 @@ class Repository::ChecksController < ApplicationController
   def cleanup_repo
     clone_dir = Rails.root.join('tmp', 'repos', @repository.full_name)
     FileUtils.rm_rf(clone_dir)
-  end
-
-  def check_params
-    params.require(:repository_check).permit(:commit_id)
   end
 end

@@ -9,7 +9,7 @@ class DockerExerciseApiStub
 
   def self.tag_image_version(_lang_version, _tag); end
 
-  def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
+  def self.run_exercise(created_code_file_path:)
     command = "ruby #{Rails.root.join('test/fixtures/files/exercise/test.rb')} #{created_code_file_path}"
 
     output = []

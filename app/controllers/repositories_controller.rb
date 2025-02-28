@@ -32,9 +32,9 @@ class RepositoriesController < ApplicationController
     )
     if @repository.save
       webhook_service.add_webhook_for_repo(@repository.full_name)
-      redirect_to repositories_path, notice: 'Репозиторий успешно добавлен'
+      redirect_to repositories_path, notice: I18n.t('repository.created')
     else
-      redirect_to new_repository_path, alert: 'Ошибка при добавлении репозитория'
+      redirect_to new_repository_path, alert: I18n.t('repository.error')
     end
   end
 

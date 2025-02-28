@@ -30,7 +30,7 @@ html
         nav.container-fluid
           .navbar-header.d-flex.align-items-center
             = link_to t('user.home'), root_path, class: 'navbar-brand text-primary text-decoration-none'
-            = link_to t('Repositories'), repositories_path, class: 'navbar-brand text-primary text-decoration-none'
+            = link_to t('repository.repositories'), repositories_path, class: 'navbar-brand text-primary text-decoration-none'
 
           - if current_user
             .ms-auto.d-flex.align-items-center

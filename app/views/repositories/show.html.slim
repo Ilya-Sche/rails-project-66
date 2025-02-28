@@ -1,16 +1,16 @@
 .container.border.p-4.rounded.mt-4
   .repository-info
     p
-      strong Название:
+      strong Name:
       = @repository.full_name
     p
-      strong Язык:
+      strong Language:
       = @repository.language
     p
-      strong Дата создания:
+      strong Created at:
       = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
     p
-      strong Дата обновления:
+      strong Updated at:
       = @repository.updated_at.strftime('%Y-%m-%d %H:%M:%S')
 
 .container.border.p-4.rounded.mt-4
@@ -18,10 +18,10 @@
     table.table
       thead
         tr
-          th Номер проверки
-          th Коммит
-          th Статус
-          th Дата последней проверки
+          th Check id
+          th Commit
+          th Status
+          th Latest check status
 
       tbody
         - @checks.each do |check|
@@ -31,4 +31,4 @@
             td = check.status.capitalize
             td = check.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
-= button_to 'Создать проверку', repository_checks_path(@repository)
+= button_to t('check.create'), repository_checks_path(@repository)

@@ -1,33 +1,33 @@
 .container.border.p-4.rounded.mt-4
-  h1 Проверка #{@check.id}
+  h1 Check #{@check.id}
 
   p
-  strong Дата создания:
+  strong Created at:
   = @check.created_at.strftime('%d %B %Y, %H:%M')
 
   p
-  strong Статус:
+  strong Status:
   = @check.status.capitalize
 
   p
-  strong Прошел проверку:
+  strong Check passed:
   = @check.passed?
 
   p
-  strong Количество ошибок:
+  strong Errors count:
   = @check.rubocop_errors.count
 
   p
-  strong ID коммита:
+  strong Commit ID:
   = link_to @check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}"
 
   .container.border.p-4.rounded.mt-4
     table.table
       thead
         tr
-          th Сообщение
-          th Идентификатор правила
-          th Строка и символ
+          th Message
+          th Rule identifier
+          th String and Symbol
 
       tbody
         - @check.rubocop_errors.group_by { |error| error.file.split(':').first }.each do |file, errors|
@@ -42,4 +42,4 @@
               td = error.offense_code
               td = "#{error.line} : #{error.column}"
 
-  = link_to 'Back to repositories', repositories_path(@repository)
+  = link_to t('repository.back'), repositories_path(@repository)

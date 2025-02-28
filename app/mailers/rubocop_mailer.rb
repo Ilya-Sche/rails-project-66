@@ -8,7 +8,7 @@ class RubocopMailer < ApplicationMailer
 
     report = format_rubocop_report(file_content)
 
-    mail(to: user_email, subject: 'RuboCop Report: Issues Found') do |format|
+    mail(to: user_email, subject: I18n.t('rubocop.found')) do |format|
       format.text { render plain: report }
       format.html { render html: "<pre>#{report}</pre>" }
     end

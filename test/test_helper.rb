@@ -7,13 +7,9 @@ OmniAuth.config.test_mode = true
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
-
-    # Add more helper methods to be used by all tests here...
   end
 
   class ActionDispatch::IntegrationTest
@@ -24,15 +20,17 @@ module ActiveSupport
         info: {
           email: user.email,
           name: user.name,
-          token: user.token,
           nickname: user.nickname,
-          image_url: user.image_url
+          image: user.image_url
+        },
+        credentials: {
+          token: user.token
         }
       }
 
-      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash::InfoHash.new(auth_hash)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(auth_hash)
 
-      get callback_auth_url('github')
+      get callback_auth_path('github')
     end
 
     def signed_in?

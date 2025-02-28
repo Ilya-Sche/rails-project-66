@@ -18,6 +18,8 @@ class AuthController < ApplicationController
     redirect_to root_path, notice: I18n.t('user.logged_out')
   end
 
+  private
+
   def find_or_create(auth)
     user = User.find_or_initialize_by(email: auth[:info][:email].downcase)
     user.assign_attributes(build_auth_user_params(auth))
@@ -29,7 +31,6 @@ class AuthController < ApplicationController
     {
       nickname: auth['info']['nickname'],
       name: auth['info']['name'],
-      email: auth['info']['email'],
       image_url: auth['info']['image'],
       token: auth['credentials']['token']
     }

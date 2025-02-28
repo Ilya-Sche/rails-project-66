@@ -3,9 +3,9 @@
     table.table
       thead
         tr
-          th Название
-          th Язык
-          th Статус последней проверки
+          th Name
+          th Language
+          th Latest check status
 
       tbody
         - @repositories.each do |repository|
@@ -15,4 +15,4 @@
             - if repository.checks.any?
               td = repository.checks.last.status
 
-= link_to 'Add repo', new_repository_path
+= link_to t('repository.add'), new_repository_path

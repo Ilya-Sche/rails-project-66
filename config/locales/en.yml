@@ -28,4 +28,27 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  user:
+    name: "Name"
+    login: "Log In"
+    signup: "Sign Up"
+    logout: "Log Out"
+    home: "Home"
+    back: "Back"
+    auth: "You shoud authorize first!"
+    entered: "You have benn successfully logged in!"
+    logged_out: "You have been successfully logged out!"
+  repository:
+    repositories: "Repositories"
+    created: "Repository successfully added"
+    error: "Repository error"
+    add: "Add repository"
+    choose: "Choose repository"
+    back: "Back to repositoties"
+  check:
+    created: "Check successfully created"
+    error: "Check error"
+    create:  "Create check"
+  rubocop:
+    found: "RuboCop Report: Issues Found"
+

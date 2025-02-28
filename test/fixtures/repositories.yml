@@ -3,7 +3,7 @@
 one:
   name: MyString
   github_id: 1
-  full_name: MyString
+  full_name: MyString/Mystring
   language: MyString
   clone_url: MyString
   ssh_url: MyString
@@ -12,7 +12,7 @@ one:
 two:
   name: MyString
   github_id: 2
-  full_name: MyString
+  full_name: MyString/Mystring
   language: MyString
   clone_url: MyString
   ssh_url: MyString
