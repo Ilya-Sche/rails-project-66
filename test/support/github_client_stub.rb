@@ -46,7 +46,7 @@ class GithubClientStub
     [
       {
         'config' => {
-          'url' => 'https://ec5e-195-54-33-188.ngrok-free.app/api/checks'
+          'url' => 'https://rails-65-3afi.onrender.com/api/checks'
         }
       }
     ]
