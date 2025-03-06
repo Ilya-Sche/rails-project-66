@@ -24,7 +24,7 @@ class Repository::ChecksController < ApplicationController
   private
 
   def fetch_commit
-    client = Octokit::Client.new(access_token: current_user.token)
+    client = ApplicationContainer[:github_client].new(access_token: current_user.token)
     commits = client.commits(@repository.full_name)
     commits.last.sha
   end
@@ -49,12 +49,12 @@ class Repository::ChecksController < ApplicationController
 
   def clone_repo
     clone_dir = Rails.root.join('tmp', 'repos', @repository.full_name)
-    system("git clone https://github.com/#{@repository.full_name}.git #{clone_dir}")
+    ApplicationContainer[:git_clone].clone_repo("git clone https://github.com/#{@repository.full_name}.git #{clone_dir}")
   end
 
   def run_rubocop
     repo_path = Rails.root.join('tmp', 'repos', @repository.full_name)
-    stdout, _stderr = Open3.capture3("rubocop --config ./.rubocop.yml #{repo_path}")
+    stdout, _stderr = ApplicationContainer[:open3].capture3("rubocop --config ./.rubocop.yml #{repo_path}")
 
     @errors = parse_rubocop_output(stdout)
     @errors.each do |error|
@@ -90,7 +90,7 @@ class Repository::ChecksController < ApplicationController
 
     repo_path = Rails.root.join('app/tmp/repos/1')
     command = "node_modules/eslint/bin/eslint.js #{repo_path} --format=json --config ./.eslintrc.yml  --no-eslintrc"
-    stdout, _stderr = Open3.capture3("sh -c '#{command}'")
+    stdout, _stderr = ApplicationContainer[:open3].capture3("sh -c '#{command}'")
 
     @errors = parse_eslint_output(stdout)
     @errors.each do |error|

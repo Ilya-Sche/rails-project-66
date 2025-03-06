@@ -13,14 +13,14 @@ class RepositoriesController < ApplicationController
   end
 
   def new
-    client = Octokit::Client.new(access_token: current_user.token, auto_paginate: true)
+    client = ApplicationContainer[:github_client].new(access_token: current_user.token, auto_paginate: true)
     @repositories = client.repos
   end
 
   def create
-    client = Octokit::Client.new access_token: current_user.token
+    client = ApplicationContainer[:github_client].new access_token: current_user.token
     repo = client.repo(params[:repo_id])
-    webhook_service = GithubWebhookService.new(Octokit::Client.new(access_token: current_user.token))
+    webhook_service = GithubWebhookService.new(ApplicationContainer[:github_client].new(access_token: current_user.token))
 
     @repository = current_user.repositories.new(
       name: repo.name,

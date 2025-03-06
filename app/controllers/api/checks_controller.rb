@@ -4,7 +4,7 @@ class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def webhook
-    payload = request.body.read
+    payload = ApplicationContainer[:payload].payload
 
     event = request.headers['X-GitHub-Event']
     case event
@@ -37,18 +37,16 @@ class Api::ChecksController < ApplicationController
     if Dir.exist?(repo_dir)
       system("cd #{repo_dir} && git pull")
     else
-      system("git clone https://github.com/#{repository_full_name}.git #{repo_dir}")
+      ApplicationContainer[:git_clone].clone_repo("git clone https://github.com/#{repository_full_name}.git #{repo_dir}")
     end
   end
 
   def run_rubocop_check(repository_full_name, user_email)
-    repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
+    rubocop = ApplicationContainer[:rubocop].call(repository_full_name)
 
-    rubocop_config_path = Rails.root.join('.rubocop.yml')
+    rubocop.run_rubocop
 
-    `cd #{repo_dir} && rubocop --config #{rubocop_config_path} --format json --out #{repo_dir}/rubocop_report.json`
-
-    rubocop_output = JSON.parse(File.read("#{repo_dir}/rubocop_report.json"))
+    rubocop_output = JSON.parse(rubocop.read_rubocop_report)
 
     if rubocop_output['files'].any? { |file| file['offenses'].any? }
       send_rubocop_report_to_user(user_email, repository_full_name)
@@ -58,10 +56,7 @@ class Api::ChecksController < ApplicationController
   end
 
   def send_rubocop_report_to_user(user_email, repository_full_name)
-    repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
-    file_path = Rails.root.join("#{repo_dir}/rubocop_report.json")
-
-    RubocopMailer.send_rubocop_report(user_email, file_path).deliver_now
+    ApplicationContainer[:send_report].call(repository_full_name).send_rubocop_report(repository_full_name, user_email)
   end
 
   def cleanup_repo(repository_full_name)
