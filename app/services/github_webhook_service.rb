@@ -20,7 +20,7 @@ class GithubWebhookService
   def add_webhook(repo_full_name)
     name = 'web'
     config = {
-      url: 'https://ec5e-195-54-33-188.ngrok-free.app/api/checks',
+      url: 'https://rails-65-3afi.onrender.com/api/checks',
       content_type: 'json'
     }
 
@@ -34,6 +34,6 @@ class GithubWebhookService
 
   def webhook_exists?(repo_full_name)
     hooks = @client.hooks(repo_full_name)
-    hooks.any? { |hook| hook['config']['url'] == 'https://ec5e-195-54-33-188.ngrok-free.app/api/checks' }
+    hooks.any? { |hook| hook['config']['url'] == 'https://rails-65-3afi.onrender.com/api/checks' }
   end
 end

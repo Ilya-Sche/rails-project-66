@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class RubocopMailer < ApplicationMailer
-  default from: 'example@mail.com'
-
   def send_rubocop_report(user_email, file_path)
     file_content = JSON.parse(File.read(file_path))
 
