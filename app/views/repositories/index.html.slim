@@ -13,6 +13,6 @@
             td = link_to repository.name, repository_path(repository)
             td = repository.language
             - if repository.checks.any?
-              td = repository.checks.last.status
+              td = repository.checks.last.aasm_state
 
 = link_to t('repository.add'), new_repository_path
