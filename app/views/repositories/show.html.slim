@@ -28,7 +28,7 @@
           tr
             td = link_to check.id, repository_check_path(@repository, check)
             td = link_to check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}"
-            td = check.status.capitalize
+            td = check.aasm_state.capitalize
             td = check.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
 = button_to t('check.create'), repository_checks_path(@repository)
