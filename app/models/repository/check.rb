@@ -8,7 +8,7 @@ class Repository::Check < ApplicationRecord
   belongs_to :repository
   has_many :rubocop_errors, dependent: :destroy
 
-  aasm column: :status do
+  aasm column: :aasm_state do
     state :pending, initial: true
     state :in_progress
     state :completed
