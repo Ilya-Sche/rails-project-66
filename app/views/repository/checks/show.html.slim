@@ -7,7 +7,7 @@
 
   p
   strong Status:
-  = @check.status.capitalize
+  = @check.aasm_state.capitalize
 
   p
   strong Check passed:
