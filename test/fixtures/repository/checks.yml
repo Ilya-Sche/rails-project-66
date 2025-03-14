@@ -2,10 +2,10 @@
 
 one:
   commit_id: MyString
-  status: MyString
+  aasm_state: MyString
   repository: one
 
 two:
   commit_id: MyString
-  status: MyString
+  aasm_state: MyString
   repository: two
