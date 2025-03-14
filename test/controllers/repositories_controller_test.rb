@@ -35,5 +35,7 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Hello-World', repository.name
     assert_equal 'octocat/Hello-World', repository.full_name
     assert_equal 'Ruby', repository.language
+    assert_equal 'https://github.com/octocat/Hello-World.git', repository.clone_url
+    assert_equal 'git@github.com:octocat/Hello-World.git', repository.ssh_url
   end
 end

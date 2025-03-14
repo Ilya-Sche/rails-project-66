@@ -8,7 +8,6 @@ OmniAuth.config.test_mode = true
 module ActiveSupport
   class TestCase
     parallelize(workers: :number_of_processors)
-    Rails.root.glob('test/support/**/*.rb').each { |f| require f }
 
     fixtures :all
   end

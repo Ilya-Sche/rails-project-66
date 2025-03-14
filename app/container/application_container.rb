@@ -12,7 +12,6 @@ class ApplicationContainer
     register :payload, -> { PayloadStub.new }
     register :rubocop, ->(repository_full_name) { RubocopReportStub.new(repository_full_name) }
     register :send_report, ->(repository_full_name) { SendReportStub.new(repository_full_name) }
-
   else
     register :github_client, -> { Octokit::Client }
     register :open3, -> { Open3 }
@@ -20,6 +19,5 @@ class ApplicationContainer
     register :payload, -> { RealPayload }
     register :rubocop, -> { RubocopReport }
     register :send_report, -> { SendReport }
-
   end
 end
