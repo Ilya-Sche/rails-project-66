@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class AuthControllerTest < ActionDispatch::IntegrationTest
+class Web::AuthControllerTest < ActionDispatch::IntegrationTest
   test 'check github auth' do
     post auth_request_path('github')
     assert_response :redirect

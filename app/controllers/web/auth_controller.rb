@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AuthController < ApplicationController
+class Web::AuthController < ApplicationController
   def callback
     auth = request.env['omniauth.auth']
     user = find_or_create(auth)
