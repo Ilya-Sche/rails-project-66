@@ -18,13 +18,13 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
 
     check = Repository::Check.last
-    assert_not_nil check
+    assert_equal @repository.id, check.repository_id
     assert_equal 'MyString/Mystring', check.repository.full_name
     assert_equal 'MyString', check.commit_id
   end
 
   test 'should process push event and create webhook' do
-    post '/api/checks', params: {}, headers: { 'X-GitHub-Event' => 'push' }
+    post '/api/checks', params: {}
 
     assert_response :ok
     json_response = response.parsed_body

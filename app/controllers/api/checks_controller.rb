@@ -19,17 +19,18 @@ class Api::ChecksController < ApplicationController
     data = JSON.parse(payload)
 
     repository_full_name = data['repository']['full_name']
+    repository_id = data['repository']['id']
     user_email = data['pusher']['email']
     data['commits']
 
-    clone_or_pull_repo(repository_full_name)
+    clone_or_pull_repo(repository_full_name, repository_id)
 
     run_rubocop_check(repository_full_name, user_email)
     render json: { message: 'Webhook processed successfully' }, status: :ok
     cleanup_repo(repository_full_name)
   end
 
-  def clone_or_pull_repo(repository_full_name)
+  def clone_or_pull_repo(repository_full_name, _repository_id)
     repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
 
     if Dir.exist?(repo_dir)
