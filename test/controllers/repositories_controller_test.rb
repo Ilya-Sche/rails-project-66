@@ -29,7 +29,7 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
   test 'should create repository' do
     github_id = 123
 
-    post repositories_path, params: { github_id: }
+    post repositories_path, params: { repository: { github_id: } }
 
     assert_redirected_to repositories_path
     repository = @user.repositories.last
