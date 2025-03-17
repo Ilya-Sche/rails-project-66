@@ -27,9 +27,9 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create repository' do
-    repo_id = 'octocat/Hello-World'
+    github_id = 123
 
-    post repositories_path, params: { repo_id: }
+    post repositories_path, params: { github_id: }
 
     assert_redirected_to repositories_path
     repository = @user.repositories.last

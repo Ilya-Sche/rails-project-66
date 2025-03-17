@@ -45,6 +45,7 @@ en:
     add: "Add repository"
     choose: "Choose repository"
     back: "Back to repositoties"
+    exists: "Repository already exists"
   check:
     created: "Check successfully created"
     error: "Check error"

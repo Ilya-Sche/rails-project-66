@@ -6,9 +6,7 @@ class Api::ChecksController < ApplicationController
   def webhook
     payload = ApplicationContainer[:payload].payload
 
-    event = request.headers['X-GitHub-Event']
-    case event
-    when 'push'
+    if payload['commits'].present?
       process_push_event(payload)
     else
       render json: { error: 'Unsupported event', status: :bad_request }

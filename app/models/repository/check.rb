@@ -9,21 +9,21 @@ class Repository::Check < ApplicationRecord
   has_many :rubocop_errors, dependent: :destroy
 
   aasm column: :aasm_state do
-    state :pending, initial: true
-    state :in_progress
-    state :completed
+    state :created, initial: true
+    state :checking
+    state :finished
     state :failed
 
     event :start_check do
-      transitions from: :pending, to: :in_progress
+      transitions from: :created, to: :checking
     end
 
     event :complete_check do
-      transitions from: :in_progress, to: :completed
+      transitions from: :checking, to: :finished
     end
 
     event :fail_check do
-      transitions from: %i[pending in_progress], to: :failed
+      transitions from: %i[created checking], to: :failed
     end
   end
 end

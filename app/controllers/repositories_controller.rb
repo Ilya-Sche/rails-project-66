@@ -19,22 +19,27 @@ class RepositoriesController < ApplicationController
 
   def create
     client = ApplicationContainer[:github_client].new access_token: current_user.token
-    repo = client.repo(params[:repo_id])
+    repo = client.repo(params[:github_id].to_i)
     webhook_service = GithubWebhookService.new(ApplicationContainer[:github_client].new(access_token: current_user.token))
+    existing_repo = current_user.repositories.find_by(github_id: repo.id) || current_user.repositories.find_by(full_name: repo.full_name)
 
-    @repository = current_user.repositories.new(
-      name: repo.name,
-      github_id: repo.id,
-      full_name: repo.full_name,
-      language: repo.language,
-      clone_url: repo.clone_url,
-      ssh_url: repo.ssh_url
-    )
-    if @repository.save
-      webhook_service.add_webhook_for_repo(@repository.full_name)
-      redirect_to repositories_path, notice: I18n.t('repository.created')
+    if existing_repo
+      redirect_to repositories_path, alert: I18n.t('repository.exists')
     else
-      redirect_to new_repository_path, alert: I18n.t('repository.error')
+      @repository = current_user.repositories.new(
+        name: repo.name,
+        github_id: repo.id,
+        full_name: repo.full_name,
+        language: repo.language,
+        clone_url: repo.clone_url,
+        ssh_url: repo.ssh_url
+      )
+      if @repository.save
+        webhook_service.add_webhook_for_repo(@repository.full_name)
+        redirect_to repositories_path, notice: I18n.t('repository.created')
+      else
+        redirect_to new_repository_path, alert: I18n.t('repository.error')
+      end
     end
   end
 

@@ -30,7 +30,7 @@ class Repository::ChecksController < ApplicationController
   end
 
   def start_rubocop_check_in_background(language)
-    @check.update(aasm_state: :in_progress)
+    @check.update(aasm_state: :checking)
     clone_repo
     if language == 'Ruby'
       run_rubocop
@@ -41,7 +41,7 @@ class Repository::ChecksController < ApplicationController
     cleanup_repo
 
     if @check.rubocop_errors.empty?
-      @check.update(aasm_state: 'completed', passed: true)
+      @check.update(aasm_state: 'finished', passed: true)
     else
       @check.update(aasm_state: 'failed', passed: false)
     end
