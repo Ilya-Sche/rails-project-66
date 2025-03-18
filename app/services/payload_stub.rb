@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 class PayloadStub
+  def initialize(params = {})
+    @params = params
+  end
+
   def payload
-    repository = Repository.last
+    repository = Repository.find(@params['repository']['id'])
+
     {
       'repository' => { 'id' => repository.id, 'full_name' => repository.full_name },
       'pusher' => { 'email' => 'test@example.com' },

@@ -9,7 +9,7 @@ class ApplicationContainer
     register :github_client, -> { GithubClientStub }
     register :open3, -> { Open3Stub }
     register :git_clone, -> { GitCloneStub }
-    register :payload, -> { PayloadStub.new }
+    register :payload, ->(params = {}) { PayloadStub.new(params) }
     register :rubocop, ->(repository_full_name) { RubocopReportStub.new(repository_full_name) }
     register :send_report, ->(repository_full_name) { SendReportStub.new(repository_full_name) }
   else
