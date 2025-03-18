@@ -2,8 +2,9 @@
 
 class PayloadStub
   def payload
+    repository = Repository.last
     {
-      'repository' => { 'id' => 980_190_962, 'full_name' => 'MyString/Mystring' },
+      'repository' => { 'id' => repository.id, 'full_name' => repository.full_name },
       'pusher' => { 'email' => 'test@example.com' },
       'commits' => [{ 'sha' => 'fake_commit_sha' }]
     }.to_json
