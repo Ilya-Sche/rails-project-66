@@ -1,8 +1,7 @@
 .container.border.p-4.rounded.mt-4
-
   = form_with url: repositories_path, method: :post, class: 'w-100' do |form|
     .form-group
       = form.label :repository, 'Github', class: 'form-label'
-      = form.select :github_id, @repositories.map { |repo| [repo.full_name, repo.id] }, {}, class: 'form-control w-100'
+      = form.select :github_id, @repositories.map { |repo| [repo.full_name, repo.id] }, {}, name: 'repository[github_id]', class: 'form-control w-100'
     .mt-3
       = form.submit t('repository.choose'), class: 'btn btn-primary w-100'

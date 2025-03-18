@@ -21,45 +21,23 @@ class Api::ChecksController < ApplicationController
     repository_full_name = data['repository']['full_name']
     repository_id = data['repository']['id']
     user_email = data['pusher']['email']
-    data['commits']
 
-    clone_or_pull_repo(repository_full_name, repository_id)
+    repository = find_repository(repository_id, repository_full_name)
 
-    run_rubocop_check(repository_full_name, user_email)
-    render json: { message: 'Webhook processed successfully' }, status: :ok
-    cleanup_repo(repository_full_name)
-  end
+    if repository
+      CheckRepositoryJob.perform_later(repository, user_email)
 
-  def clone_or_pull_repo(repository_full_name, _repository_id)
-    repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
-
-    if Dir.exist?(repo_dir)
-      system("cd #{repo_dir} && git pull")
+      render json: { message: 'Webhook processed successfully' }, status: :ok
     else
-      ApplicationContainer[:git_clone].clone_repo("git clone https://github.com/#{repository_full_name}.git #{repo_dir}")
+      render json: { error: 'Repository not found', status: :not_found }
     end
   end
 
-  def run_rubocop_check(repository_full_name, user_email)
-    rubocop = ApplicationContainer[:rubocop].call(repository_full_name)
+  def find_repository(repository_id, repository_full_name)
+    repository = Repository.find_by(github_id: repository_id)
 
-    rubocop.run_rubocop
+    repository ||= Repository.find_by(full_name: repository_full_name)
 
-    rubocop_output = JSON.parse(rubocop.read_rubocop_report)
-
-    if rubocop_output['files'].any? { |file| file['offenses'].any? }
-      send_rubocop_report_to_user(user_email, repository_full_name)
-    else
-      Rails.logger.info('No offenses found.')
-    end
-  end
-
-  def send_rubocop_report_to_user(user_email, repository_full_name)
-    ApplicationContainer[:send_report].call(repository_full_name).send_rubocop_report(repository_full_name, user_email)
-  end
-
-  def cleanup_repo(repository_full_name)
-    repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
-    FileUtils.rm_rf(repo_dir)
+    repository
   end
 end

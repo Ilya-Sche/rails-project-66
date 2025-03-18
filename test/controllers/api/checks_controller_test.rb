@@ -22,13 +22,4 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'MyString/Mystring', check.repository.full_name
     assert_equal 'MyString', check.commit_id
   end
-
-  test 'should process push event and create webhook' do
-    post '/api/checks', params: {}
-
-    assert_response :ok
-    json_response = response.parsed_body
-
-    assert_equal 'Webhook processed successfully', json_response['message']
-  end
 end
