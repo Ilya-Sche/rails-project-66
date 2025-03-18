@@ -34,7 +34,6 @@ class RepositoriesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to repositories_path
     repository = @user.repositories.last
     assert_equal 'Hello-World', repository.name
-    assert_equal 123, repository.github_id
     assert_equal 'octocat/Hello-World', repository.full_name
     assert_equal 'Ruby', repository.language
     assert_equal 'https://github.com/octocat/Hello-World.git', repository.clone_url

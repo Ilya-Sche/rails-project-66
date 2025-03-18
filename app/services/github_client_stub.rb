@@ -10,10 +10,10 @@ class GithubClientStub
     [Struct.new(:sha).new('fake_commit_sha')]
   end
 
-  def repo(_github_id)
+  def repo(github_id)
     Struct.new(:name, :id, :full_name, :language, :clone_url, :ssh_url).new(
       'Hello-World',
-      123,
+      github_id,
       'octocat/Hello-World',
       'Ruby',
       'https://github.com/octocat/Hello-World.git',
