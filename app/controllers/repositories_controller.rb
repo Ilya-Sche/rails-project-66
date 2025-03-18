@@ -19,7 +19,7 @@ class RepositoriesController < ApplicationController
 
   def create
     client = ApplicationContainer[:github_client].new access_token: current_user.token
-    repo = client.repo(params[:github_id].to_i)
+    repo = client.repo(params[:repository][:github_id].to_i)
     webhook_service = GithubWebhookService.new(ApplicationContainer[:github_client].new(access_token: current_user.token))
     existing_repo = current_user.repositories.find_by(github_id: repo.id) || current_user.repositories.find_by(full_name: repo.full_name)
 
