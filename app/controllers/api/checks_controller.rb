@@ -21,7 +21,6 @@ class Api::ChecksController < ApplicationController
     repository_full_name = data['repository']['full_name']
     repository_id = data['repository']['id']
     user_email = data['pusher']['email']
-
     repository = find_repository(repository_id, repository_full_name)
 
     if repository
@@ -34,6 +33,6 @@ class Api::ChecksController < ApplicationController
   end
 
   def find_repository(repository_id, repository_full_name)
-    Repository.find_by(github_id: repository_id) || Repository.find_by(full_name: repository_full_name)
+    Repository.find(repository_id) || Repository.find_by(full_name: repository_full_name)
   end
 end
