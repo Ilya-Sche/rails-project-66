@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PayloadStub
-  def initialize(repository_id, repository_full_name)
+  def initialize(repository_id: nil, repository_full_name: nil)
     @repository_id = repository_id
     @repository_full_name = repository_full_name
   end

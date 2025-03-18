@@ -4,15 +4,11 @@ require 'test_helper'
 class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
   def setup
     @repository = repositories(:one)
-    @payload_stub = PayloadStub.new
   end
 
   test 'should create check' do
-    payload = JSON.parse(@payload_stub.payload)
-
     post '/api/checks', params: {
-      repository: { id: @repository.id, full_name: @repository.full_name },
-      payload: payload
+      repository: { id: @repository.id, full_name: @repository.full_name }
     }
 
     assert_response :ok

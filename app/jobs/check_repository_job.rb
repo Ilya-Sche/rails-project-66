@@ -6,22 +6,11 @@ class CheckRepositoryJob < ApplicationJob
   def perform(repository, user_email)
     repository_full_name = repository.full_name
 
-    # clone_or_pull_repo(repository_full_name)
     run_rubocop_check(repository_full_name, user_email)
     cleanup_repo(repository_full_name)
   end
 
   private
-
-  # def clone_or_pull_repo(repository_full_name)
-  #   repo_dir = Rails.root.join('tmp', 'repos', repository_full_name)
-
-  #   if Dir.exist?(repo_dir)
-  #     system("cd #{repo_dir} && git pull")
-  #   else
-  #     ApplicationContainer[:git_clone].clone_repo("git clone https://github.com/#{repository_full_name}.git #{repo_dir}")
-  #   end
-  # end
 
   def run_rubocop_check(repository_full_name, user_email)
     rubocop = ApplicationContainer[:rubocop].call(repository_full_name)
