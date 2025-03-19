@@ -19,6 +19,7 @@ class Api::ChecksController < ApplicationController
 
     repository_full_name = data['repository']['full_name']
     user_email = data['pusher']['email']
+
     repository = find_repository(repository_full_name)
     if repository
       CheckRepositoryJob.perform_later(repository, user_email)
