@@ -8,7 +8,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create check' do
     post '/api/checks', params: {
-      repository: { id: @repository.id, full_name: @repository.full_name }
+      repository: { id: @repository.github_id, full_name: @repository.full_name }
     }
     assert_response :ok
 

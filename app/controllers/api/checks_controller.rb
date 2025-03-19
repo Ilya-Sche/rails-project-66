@@ -5,7 +5,6 @@ class Api::ChecksController < ApplicationController
 
   def webhook
     payload = ApplicationContainer[:payload].call(params).payload
-
     if payload['commits'].present?
       process_push_event(payload)
     else
@@ -32,6 +31,6 @@ class Api::ChecksController < ApplicationController
   end
 
   def find_repository(repository_full_name)
-    Repository.find(params['repository']['id']) || Repository.find_by(full_name: repository_full_name)
+    Repository.find_by(github_id: params['repository']['id']) || Repository.find_by(full_name: repository_full_name)
   end
 end
