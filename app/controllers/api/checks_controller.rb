@@ -5,7 +5,6 @@ class Api::ChecksController < ApplicationController
 
   def webhook
     payload = ApplicationContainer[:payload].call(params).payload
-
     if payload['commits'].present?
       process_push_event(payload)
     else
@@ -19,10 +18,8 @@ class Api::ChecksController < ApplicationController
     data = JSON.parse(payload)
 
     repository_full_name = data['repository']['full_name']
-    repository_id = data['repository']['id']
     user_email = data['pusher']['email']
-
-    repository = find_repository(repository_id, repository_full_name)
+    repository = find_repository(repository_full_name)
 
     if repository
       CheckRepositoryJob.perform_later(repository, user_email)
@@ -33,7 +30,7 @@ class Api::ChecksController < ApplicationController
     end
   end
 
-  def find_repository(repository_id, repository_full_name)
-    Repository.find(repository_id) || Repository.find_by(full_name: repository_full_name)
+  def find_repository(repository_full_name)
+    Repository.find_by(full_name: repository_full_name)
   end
 end

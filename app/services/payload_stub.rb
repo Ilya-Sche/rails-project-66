@@ -6,7 +6,7 @@ class PayloadStub
   end
 
   def payload
-    repository = Repository.find(@params['repository']['id'])
+    repository = Repository.find_by(full_name: @params['repository']['full_name'])
 
     {
       'repository' => { 'id' => repository.id, 'full_name' => repository.full_name },
