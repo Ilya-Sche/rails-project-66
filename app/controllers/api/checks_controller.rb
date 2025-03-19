@@ -19,7 +19,9 @@ class Api::ChecksController < ApplicationController
 
     repository_full_name = data['repository']['full_name']
     user_email = data['pusher']['email']
-    repository = find_repository(repository_full_name)
+    repository_id = data['repository']['id']
+
+    repository = find_repository(repository_id, repository_full_name)
     if repository
       CheckRepositoryJob.perform_later(repository, user_email)
 
@@ -29,7 +31,7 @@ class Api::ChecksController < ApplicationController
     end
   end
 
-  def find_repository(repository_full_name)
-    Repository.find_by(github_id: params['repository']['id']) || Repository.find_by(full_name: repository_full_name)
+  def find_repository(repository_id, repository_full_name)
+    Repository.find_by(github_id: repository_id) || Repository.find_by(full_name: repository_full_name)
   end
 end
