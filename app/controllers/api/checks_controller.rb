@@ -31,6 +31,6 @@ class Api::ChecksController < ApplicationController
   end
 
   def find_repository(repository_full_name)
-    Repository.find_by(github_id: params['repository']['id']) || Repository.find_by(full_name: repository_full_name)
+    Repository.find_by(params['repository']['id']) || Repository.find_by(full_name: repository_full_name)
   end
 end
