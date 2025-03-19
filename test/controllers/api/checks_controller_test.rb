@@ -10,7 +10,6 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     post '/api/checks', params: {
       repository: { id: @repository.id, full_name: @repository.full_name }
     }
-
     assert_response :ok
 
     check = Repository::Check.last
