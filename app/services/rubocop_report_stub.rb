@@ -9,19 +9,7 @@ class RubocopReportStub
     {
       'files' => [
         {
-          'path' => 'app/models/user.rb',
-          'offenses' => [
-            {
-              'severity' => 'convention',
-              'message' => 'Line is too long. [81/80]',
-              'cop_name' => 'Layout/LineLength',
-              'location' => {
-                'line' => 10,
-                'column' => 81,
-                'length' => 1
-              }
-            }
-          ]
+          'path' => 'app/models/user.rb'
         }
       ]
     }.to_json
