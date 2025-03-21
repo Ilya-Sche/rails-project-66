@@ -17,6 +17,7 @@ class CheckRepositoryJob < ApplicationJob
 
   def run_rubocop_check(repository, user_email, commit_id)
     repository_full_name = repository.full_name
+    create_repository_check!(commit_id, repository.id)
 
     rubocop = ApplicationContainer[:rubocop].call(repository_full_name)
     rubocop.run_rubocop
@@ -24,12 +25,10 @@ class CheckRepositoryJob < ApplicationJob
     rubocop_output = JSON.parse(rubocop.read_rubocop_report)
 
     if rubocop_output['files'].any? { |file| file['offenses'].any? }
-      create_repository_check!(commit_id, repository.id)
       @repository_check.update(aasm_state: 'failed', passed: false)
       send_rubocop_report_to_user(user_email, repository_full_name)
     else
       Rails.logger.info('No offenses found.')
-      create_repository_check!(commit_id, repository.id)
       @repository_check.update(aasm_state: 'finished', passed: true)
     end
   end
