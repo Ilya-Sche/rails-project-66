@@ -5,7 +5,7 @@ class CheckRepositoryJob < ApplicationJob
 
   def perform(repository, user_email, commit_id)
     run_rubocop_check(repository, user_email, commit_id)
-    cleanup_repo(repository_full_name)
+    cleanup_repo(repository.full_name)
   end
 
   private
