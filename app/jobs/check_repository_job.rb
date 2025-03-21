@@ -3,24 +3,31 @@
 class CheckRepositoryJob < ApplicationJob
   queue_as :default
 
-  def perform(repository, user_email)
-    repository_full_name = repository.full_name
-
-    run_rubocop_check(repository_full_name, user_email)
+  def perform(repository, user_email, commit_id)
+    run_rubocop_check(repository, user_email, commit_id)
     cleanup_repo(repository_full_name)
   end
 
   private
 
-  def run_rubocop_check(repository_full_name, user_email)
+  def create_repository_check!(commit_id, repository_id, passed)
+    repository_check = Repository::Check.new(commit_id:, repository_id:, passed:)
+    repository_check.save!
+  end
+
+  def run_rubocop_check(repository, user_email, commit_id)
+    repository_full_name = repository.full_name
+
     rubocop = ApplicationContainer[:rubocop].call(repository_full_name)
     rubocop.run_rubocop
     rubocop_output = JSON.parse(rubocop.read_rubocop_report)
 
     if rubocop_output['files'].any? { |file| file['offenses'].any? }
+      create_repository_check!(commit_id, repository.id, false)
       send_rubocop_report_to_user(user_email, repository_full_name)
     else
       Rails.logger.info('No offenses found.')
+      create_repository_check!(commit_id, repository.id, true)
     end
   end
 
