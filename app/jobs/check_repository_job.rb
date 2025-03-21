@@ -25,11 +25,10 @@ class CheckRepositoryJob < ApplicationJob
     rubocop_output = JSON.parse(rubocop.read_rubocop_report)
 
     if rubocop_output['files'].any? { |file| file['offenses'].any? }
-      @repository_check.update(aasm_state: 'failed', passed: false)
+      @repository_check.update(aasm_state: 'finished', passed: false)
       send_rubocop_report_to_user(user_email, repository_full_name)
     else
       Rails.logger.info('No offenses found.')
-      @repository_check.update(aasm_state: 'finished', passed: true)
     end
   end
 
