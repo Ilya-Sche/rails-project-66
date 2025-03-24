@@ -16,11 +16,12 @@ class Api::ChecksController < ApplicationController
   private
 
   def process_push_event(payload)
-    repository_full_name = payload['repository']['full_name']
-    user_email = payload['pusher']['email']
-    commit_id = payload['commits'].last['sha']
-    repository = find_repository(repository_full_name)
+    data = JSON.parse(payload)
 
+    repository_full_name = data['repository']['full_name']
+    user_email = data['pusher']['email']
+    commit_id = data['commits'].last['sha']
+    repository = find_repository(repository_full_name)
     if repository
       ApiCheckRepositoryJob.perform_later(repository, user_email, commit_id)
 
