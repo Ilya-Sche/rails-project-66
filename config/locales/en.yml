@@ -38,13 +38,14 @@ en:
     auth: "You shoud authorize first!"
     entered: "You have benn successfully logged in!"
     logged_out: "You have been successfully logged out!"
+    not_performed: "You are not performed for this action"
   repository:
     repositories: "Repositories"
     created: "Repository successfully added"
     error: "Repository error"
     add: "Add repository"
     choose: "Choose repository"
-    back: "Back to repositoties"
+    back: "Back to repository"
     exists: "Repository already exists"
   check:
     created: "Check successfully created"

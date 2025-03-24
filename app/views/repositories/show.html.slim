@@ -9,9 +9,8 @@
     p
       strong Created at:
       = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
-    p
-      strong Updated at:
-      = @repository.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+
+    = button_to t('check.create'), repository_checks_path(@repository)
 
 .container.border.p-4.rounded.mt-4
   .table-responsive
@@ -20,7 +19,6 @@
         tr
           th Check id
           th Commit
-          th Status
           th Latest check status
 
       tbody
@@ -29,6 +27,3 @@
             td = link_to check.id, repository_check_path(@repository, check)
             td = link_to check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}"
             td = check.aasm_state.capitalize
-            td = check.created_at.strftime('%Y-%m-%d %H:%M:%S')
-
-= button_to t('check.create'), repository_checks_path(@repository)

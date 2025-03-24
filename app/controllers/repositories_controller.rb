@@ -8,7 +8,9 @@ class RepositoriesController < ApplicationController
   end
 
   def show
-    @repository = Repository.find(params[:id])
+    @repository = Repository.owner(current_user).find(params[:id])
+    authorize @repository
+
     @checks = @repository.checks.order(created_at: :desc).limit(5)
   end
 

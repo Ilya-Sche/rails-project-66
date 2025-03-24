@@ -5,7 +5,9 @@ class Repository < ApplicationRecord
   has_many :checks, class_name: 'Repository::Check', dependent: :destroy
 
   extend Enumerize
-  enumerize :language, in: ['Ruby'], default: 'Ruby', predicates: true
+  enumerize :language, in: %w[Ruby JavaScript], default: 'Ruby', predicates: true
+
+  scope :owner, ->(user) { where(user_id: user.id) }
 
   validates :name, presence: true
   validates :github_id, presence: true

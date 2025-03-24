@@ -22,7 +22,7 @@ class Api::ChecksController < ApplicationController
     commit_id = data['commits'].last['sha']
     repository = find_repository(repository_full_name)
     if repository
-      CheckRepositoryJob.perform_later(repository, user_email, commit_id)
+      ApiCheckRepositoryJob.perform_later(repository, user_email, commit_id)
 
       render json: { message: 'Webhook processed successfully' }, status: :ok
     else

@@ -14,5 +14,7 @@
             td = repository.language
             - if repository.checks.any?
               td = repository.checks.last.aasm_state
+            - else
+              td = t('repository.no_checks')
 
 = link_to t('repository.add'), new_repository_path

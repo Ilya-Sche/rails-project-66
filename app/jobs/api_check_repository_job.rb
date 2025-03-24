@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CheckRepositoryJob < ApplicationJob
+class ApiCheckRepositoryJob < ApplicationJob
   queue_as :default
 
   def perform(repository, user_email, commit_id)
