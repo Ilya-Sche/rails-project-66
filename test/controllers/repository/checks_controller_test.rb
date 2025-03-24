@@ -16,10 +16,21 @@ class Repository::ChecksControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create check' do
     assert_difference('Repository::Check.count', 1) do
-      post repository_checks_path(@repo), params: { repository_check: { commit_id: 'fake_commit_sha', repository_id: @repo.id } }
+      post repository_checks_path(@repo), params: { repository_check: { repository_id: @repo.id } }
     end
-    assert_redirected_to repository_path(@repo)
+
+    assert_enqueued_with(job: RepositoryCheckJob) do
+      post repository_checks_path(@repo), params: { repository_check: { repository_id: @repo.id } }
+    end
+
+    perform_enqueued_jobs do
+      post repository_checks_path(@repo), params: { repository_check: { repository_id: @repo.id } }
+    end
+
     check = Repository::Check.last
+    check.reload
+
+    assert_redirected_to repository_path(@repo)
 
     assert_equal 'fake_commit_sha', check.commit_id
     assert_equal @repo.id, check.repository_id
