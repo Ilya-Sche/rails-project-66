@@ -5,6 +5,7 @@ class Api::ChecksController < ApplicationController
 
   def webhook
     payload = ApplicationContainer[:payload].call(params).payload
+
     if payload['commits'].present?
       process_push_event(payload)
     else
