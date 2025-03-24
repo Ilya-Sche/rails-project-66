@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class RealPayload
-  def initialize(params, request, body)
+  def initialize(params)
     @params = params
-    @request = request
-    @body = body
   end
 
   def payload
-    JSON.parse(@request.body.read)
+    request.body.read.to_json
   end
 end
