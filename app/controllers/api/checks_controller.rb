@@ -4,8 +4,7 @@ class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def webhook
-    payload = ApplicationContainer[:payload].call(request).payload
-
+    payload = ApplicationContainer[:payload].call(params).payload
     if payload['commits'].present?
       process_push_event(payload)
     else
