@@ -6,6 +6,6 @@ class RealPayload
   end
 
   def payload
-    @request.body.read
+    JSON.parse(@request.body.read)
   end
 end

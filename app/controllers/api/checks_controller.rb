@@ -4,7 +4,7 @@ class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def webhook
-    payload = ApplicationContainer[:payload].call(params).payload
+    payload = ApplicationContainer[:payload].call(request).payload
 
     if payload['commits'].present?
       process_push_event(payload)
@@ -16,12 +16,11 @@ class Api::ChecksController < ApplicationController
   private
 
   def process_push_event(payload)
-    data = JSON.parse(payload)
-
-    repository_full_name = data['repository']['full_name']
-    user_email = data['pusher']['email']
-    commit_id = data['commits'].last['sha']
+    repository_full_name = payload['repository']['full_name']
+    user_email = payload['pusher']['email']
+    commit_id = payload['commits'].last['sha']
     repository = find_repository(repository_full_name)
+
     if repository
       ApiCheckRepositoryJob.perform_later(repository, user_email, commit_id)
 

@@ -16,7 +16,7 @@ class ApplicationContainer
     register :github_client, -> { Octokit::Client }
     register :open3, -> { Open3 }
     register :git_clone, -> { GitClone.new }
-    register :payload, ->(request = {}) { RealPayload.new(request) }
+    register :payload, ->(request = nil) { RealPayload.new(request) }
     register :rubocop, -> { RubocopReport.new }
     register :send_report, -> { SendReport.new }
   end
