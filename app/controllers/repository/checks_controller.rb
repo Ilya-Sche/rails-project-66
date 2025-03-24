@@ -16,7 +16,7 @@ class Repository::ChecksController < ApplicationController
 
     if @check.save
       redirect_to repository_path(@repository), notice: I18n.t('check.created')
-      RepositoryCheckJob.perform_now(@check.id, @repository.id)
+      RepositoryCheckJob.perform_later(@check.id, @repository.id)
     else
       redirect_to repository_path(@repository), alert: I18n.t('check.error')
     end

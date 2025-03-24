@@ -11,7 +11,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.owner(current_user).find(params[:id])
     authorize @repository
 
-    @checks = @repository.checks.order(created_at: :desc).limit(5)
+    @checks = @repository.checks.order(created_at: :desc).limit(15)
   end
 
   def new
