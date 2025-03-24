@@ -2,15 +2,17 @@
   .repository-info
     p
       strong Name:
-      = @repository.full_name
+      span(style='margin-left: 10px; font-weight: normal;') = @repository.full_name
+
     p
       strong Language:
-      = @repository.language
+      span(style='margin-left: 10px; font-weight: normal;') = @repository.language
+
     p
       strong Created at:
-      = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
+      span(style='margin-left: 10px; font-weight: normal;') = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
-    = button_to t('check.create'), repository_checks_path(@repository)
+    = button_to t('check.create'), repository_checks_path(@repository), class: 'btn btn-primary'
 
 .container.border.p-4.rounded.mt-4
   .table-responsive

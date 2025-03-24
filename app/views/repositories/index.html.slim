@@ -1,6 +1,8 @@
 .container.border.p-4.rounded.mt-4
   .table-responsive
     table.table
+      = link_to t('repository.add'), new_repository_path, class: 'btn btn-primary'
+      p
       thead
         tr
           th Name
@@ -16,5 +18,3 @@
               td = repository.checks.last.aasm_state
             - else
               td = t('repository.no_checks')
-
-= link_to t('repository.add'), new_repository_path

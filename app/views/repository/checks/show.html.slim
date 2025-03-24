@@ -3,23 +3,23 @@
 
   p
   strong Created at:
-  = @check.created_at.strftime('%d %B %Y, %H:%M')
+  span(style='margin-left: 10px; font-weight: normal;') = @check.created_at.strftime('%d %B %Y, %H:%M')
 
   p
   strong Status:
-  = @check.aasm_state.capitalize
+  span(style='margin-left: 10px; font-weight: normal;') = @check.aasm_state.capitalize
 
   p
   strong Check passed:
-  = @check.passed?
+  span(style='margin-left: 10px; font-weight: normal;') = @check.passed?
 
   p
   strong Errors count:
-  = @check.rubocop_errors.count
+  span(style='margin-left: 10px; font-weight: normal;') = @check.rubocop_errors.count
 
   p
   strong Commit ID:
-  = link_to @check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}"
+  span(style='margin-left: 10px; font-weight: normal;') = link_to @check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}"
 
   .container.border.p-4.rounded.mt-4
     table.table
@@ -41,5 +41,5 @@
               td = error.message
               td = error.offense_code
               td = "#{error.line} : #{error.column}"
-
-  = link_to t('repository.back'), repository_path(@repository)
+  p
+  = link_to t('repository.back'), repository_path(@repository), class: 'btn btn-primary'

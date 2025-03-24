@@ -38,6 +38,9 @@ class RepositoriesController < ApplicationController
       )
       if @repository.save
         webhook_service.add_webhook_for_repo(@repository.full_name)
+        check = @repository.checks.create
+
+        RepositoryCheckJob.perform_later(check.id, @repository.id)
         redirect_to repositories_path, notice: I18n.t('repository.created')
       else
         redirect_to new_repository_path, alert: I18n.t('repository.error')
