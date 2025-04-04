@@ -4,7 +4,7 @@ class Api::ChecksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    payload = params
+    payload = ApplicationContainer[:payload].call(params).payload
 
     if payload['commits'].present?
       user_email = payload['pusher']['email']

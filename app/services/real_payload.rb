@@ -5,7 +5,7 @@ class RealPayload
     @params = params
   end
 
-  # def payload
-  #   request.body.read.to_json
-  # end
+  def payload
+    @params
+  end
 end
