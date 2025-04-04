@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class RepositoryCheckJob < ApplicationJob
+class Repository::CheckJob < ApplicationJob
   queue_as :default
 
-  def perform(check_id, repository_id)
+  def perform(check_id)
     @check = Repository::Check.find(check_id)
-    @repository = Repository.find(repository_id)
+    @repository = @check.repository
 
     commit_id = fetch_commit(@repository)
 
@@ -85,7 +85,7 @@ class RepositoryCheckJob < ApplicationJob
 
     @errors = parse_eslint_output(stdout)
     @errors.each do |error|
-      check.rubocop_errors.create(
+      check.linter_errors.create(
         file: error[:file],
         line: error[:line],
         offense_code: error[:offense_code],

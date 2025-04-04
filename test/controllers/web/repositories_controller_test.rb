@@ -2,7 +2,7 @@
 
 require 'test_helper'
 require 'ostruct'
-class RepositoriesControllerTest < ActionDispatch::IntegrationTest
+class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)
     sign_in @user

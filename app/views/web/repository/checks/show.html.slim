@@ -15,7 +15,7 @@
 
   p
   strong Errors count:
-  span(style='margin-left: 10px; font-weight: normal;') = @check.rubocop_errors.count
+  span(style='margin-left: 10px; font-weight: normal;') = @check.linter_errors.count
 
   p
   strong Commit ID:
@@ -30,7 +30,7 @@
           th String and Symbol
 
       tbody
-        - @check.rubocop_errors.group_by { |error| error.file.split(':').first }.each do |file, errors|
+        - @check.linter_errors.group_by { |error| error.file.split(':').first }.each do |file, errors|
           tr
             td colspan="4"
               - file_path = file.sub('app/tmp/repos/1', '')

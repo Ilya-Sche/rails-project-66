@@ -6,7 +6,7 @@ class Repository::Check < ApplicationRecord
   self.table_name = 'repository_checks'
 
   belongs_to :repository
-  has_many :rubocop_errors, dependent: :destroy
+  has_many :linter_errors, dependent: :destroy
 
   aasm column: :aasm_state do
     state :created, initial: true

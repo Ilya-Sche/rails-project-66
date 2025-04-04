@@ -5,7 +5,7 @@ class Web::AuthController < ApplicationController
     auth = request.env['omniauth.auth']
     user = find_or_create(auth)
 
-    if user.save
+    if user
       sign_in(user)
       redirect_to root_path, notice: I18n.t('user.entered')
     else
@@ -23,7 +23,7 @@ class Web::AuthController < ApplicationController
   def find_or_create(auth)
     user = User.find_or_initialize_by(email: auth[:info][:email].downcase)
     user.assign_attributes(build_auth_user_params(auth))
-    user.save!
+    user.save
     user
   end
 

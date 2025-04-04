@@ -19,7 +19,7 @@ class Repository::ChecksControllerTest < ActionDispatch::IntegrationTest
       post repository_checks_path(@repo), params: { repository_check: { repository_id: @repo.id } }
     end
 
-    assert_enqueued_with(job: RepositoryCheckJob) do
+    assert_enqueued_with(job: Repository::CheckJob) do
       post repository_checks_path(@repo), params: { repository_check: { repository_id: @repo.id } }
     end
 

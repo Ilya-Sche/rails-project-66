@@ -16,4 +16,8 @@ class ApplicationController < ActionController::Base
     flash[:alert] = t('user.not_performed')
     redirect_to root_path
   end
+
+  def authenticate_user!
+    redirect_to root_path, alert: I18n.t('user.auth') unless current_user
+  end
 end
