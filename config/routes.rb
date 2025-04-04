@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     get '/logout', to: 'auth#destroy', as: 'logout'
 
     resources :repositories, only: %i[index new create show] do
-      resources :checks, only: %i[create show]
+      resources :checks, only: %i[create show], module: :repository
     end
   end
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -22,6 +22,6 @@ Rails.application.routes.draw do
   root 'web/welcome#index'
 
   namespace :api do
-    resources :check, only: [:create]
+    resources :checks, only: [:create]
   end
 end
