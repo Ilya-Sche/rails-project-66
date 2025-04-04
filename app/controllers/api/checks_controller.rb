@@ -10,6 +10,7 @@ class Api::ChecksController < ApplicationController
       user_email = payload['pusher']['email']
       commit_id = payload['commits'].last['sha']
       repository = find_repository
+
       if repository
         ApiCheckRepositoryJob.perform_later(repository, user_email, commit_id)
 
