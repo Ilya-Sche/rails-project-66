@@ -9,7 +9,8 @@ class Api::ChecksController < ApplicationController
     if payload['commits'].present?
       repository = find_repository
       if repository
-        Repository::CheckJob.perform_later(repository.id)
+        check = Repository::Check.create(repository_id: repository.id)
+        Repository::CheckJob.perform_later(check.id)
 
         render json: { message: 'Webhook processed successfully' }, status: :ok
       else
