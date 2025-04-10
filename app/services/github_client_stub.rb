@@ -46,7 +46,7 @@ class GithubClientStub
     [
       {
         'config' => {
-          'url' => 'https://rails-65-3afi.onrender.com/api/checks'
+          'url' => 'https://rails-65.onrender.com/api/checks'
         }
       }
     ]

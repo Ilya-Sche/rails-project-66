@@ -3,7 +3,7 @@
 
 [![hexlet-check](https://github.com/Ilya-Sche/rails-project-66/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Ilya-Sche/rails-project-66/actions/workflows/hexlet-check.yml)
 
-Приложение доступно по ссылке - https://rails-65-3afi.onrender.com
+Приложение доступно по ссылке - https://rails-65.onrender.com
 
 # Рубокоп Проверка Репозитория
 

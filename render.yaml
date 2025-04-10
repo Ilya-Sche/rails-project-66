@@ -1,6 +1,6 @@
 databases:
   - name: Rails-66
-    databaseName: rails_project_65_1
+    databaseName: rails_project_65_1_jl9z
     user: rails_66_user
     plan: free
 
