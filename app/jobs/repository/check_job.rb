@@ -38,7 +38,6 @@ class Repository::CheckJob < ApplicationJob
     end
     rubocop_report = ApplicationContainer[:rubocop].call(@repository.full_name)
     rubocop_report.run_rubocop
-    send_linter_report_to_user(@repository.user.email, repo_path)
 
     cleanup_repo(repo_path)
 

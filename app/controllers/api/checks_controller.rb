@@ -7,8 +7,6 @@ class Api::ChecksController < ApplicationController
     payload = ApplicationContainer[:payload].call(params).payload
 
     if payload['commits'].present?
-      # user_email = payload['pusher']['email']
-      # commit_id = payload['commits'].last['sha']
       repository = find_repository
       if repository
         Repository::CheckJob.perform_later(repository.id)
