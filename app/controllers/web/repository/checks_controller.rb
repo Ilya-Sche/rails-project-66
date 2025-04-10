@@ -7,7 +7,6 @@ class Web::Repository::ChecksController < ApplicationController
   def show
     @repository = current_user.repositories.find(params[:repository_id])
     @check = @repository.checks.find(params[:id])
-    authorize @check
   end
 
   def create
