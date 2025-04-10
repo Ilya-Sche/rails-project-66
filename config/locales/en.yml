@@ -47,10 +47,26 @@ en:
     choose: "Choose repository"
     back: "Back to repository"
     exists: "Repository already exists"
+    welcome: "Welcome to repo analyzer!"
+    commit: "Commit id"
+    name: "Name"
+    language: "Language"
+
   check:
     created: "Check successfully created"
     error: "Check error"
     create:  "Create check"
+    created_at: "Created at"
+    status: "Status"
+    passed: "Check passed"
+    id: "Check id"
+    commit: "Commit"
+    latest_check: "Latest check status"
   rubocop:
     found: "RuboCop Report: Issues Found"
+    message: "Message"
+    cop: "Rule identifier"
+    string: "String and symbol"
+  errors:
+    count: "Errors count"
 

@@ -4,7 +4,7 @@ one:
   name: MyString
   github_id: 1
   full_name: MyString/Mystring
-  language: MyString
+  language: Ruby
   clone_url: MyString
   ssh_url: MyString
   user: one
@@ -13,7 +13,7 @@ two:
   name: MyString
   github_id: 2
   full_name: MyString/Mystring
-  language: MyString
+  language: Ruby
   clone_url: MyString
   ssh_url: MyString
   user: two

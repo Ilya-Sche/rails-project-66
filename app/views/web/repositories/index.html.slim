@@ -5,9 +5,9 @@
       p
       thead
         tr
-          th Name
-          th Language
-          th Latest check status
+          th = t('check.id')
+          th = t('check.commit')
+          th = t('check.latest_check')
 
       tbody
         - @repositories.each do |repository|

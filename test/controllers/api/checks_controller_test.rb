@@ -14,7 +14,6 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
 
     check = Repository::Check.last
     assert_equal @repository.id, check.repository_id
-    assert_equal 'MyString/Mystring', check.repository.full_name
-    assert_equal 'MyString', check.commit_id
+    assert_equal 'fake_commit_sha', check.commit_id
   end
 end

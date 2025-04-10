@@ -10,6 +10,11 @@ module ActiveSupport
     parallelize(workers: :number_of_processors)
 
     fixtures :all
+
+    setup do
+      queue_adapter.perform_enqueued_jobs = true
+      queue_adapter.perform_enqueued_at_jobs = true
+    end
   end
 
   class ActionDispatch::IntegrationTest

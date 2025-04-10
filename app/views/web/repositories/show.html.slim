@@ -1,15 +1,15 @@
 .container.border.p-4.rounded.mt-4
   .repository-info
     p
-      strong Name:
+      strong = "#{t('repository.name')} :"
       span(style='margin-left: 10px; font-weight: normal;') = @repository.full_name
 
     p
-      strong Language:
+      strong = "#{t('repository.language')} :"
       span(style='margin-left: 10px; font-weight: normal;') = @repository.language
 
     p
-      strong Created at:
+      strong = "#{t('check.created_at')} :"
       span(style='margin-left: 10px; font-weight: normal;') = @repository.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
     = button_to t('check.create'), repository_checks_path(@repository), class: 'btn btn-primary'
@@ -19,13 +19,13 @@
     table.table
       thead
         tr
-          th Check id
-          th Commit
-          th Latest check status
+          th = t('check.id')
+          th = t('check.commit')
+          th = t('check.latest_check')
 
       tbody
         - @checks.each do |check|
           tr
             td = link_to check.id, repository_check_path(@repository, check)
-            td = link_to check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}"
+            td = link_to check.commit_id, check.commit_link
             td = check.aasm_state.capitalize

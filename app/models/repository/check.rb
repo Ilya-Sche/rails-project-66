@@ -26,4 +26,8 @@ class Repository::Check < ApplicationRecord
       transitions from: %i[created checking], to: :failed
     end
   end
+
+  def commit_link
+    "https://github.com/#{repository.full_name}/commit/#{commit_id}"
+  end
 end
