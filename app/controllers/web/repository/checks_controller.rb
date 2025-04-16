@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'open3'
-
-class Web::Repository::ChecksController < ApplicationController
+class Web::Repository::ChecksController < Web::ApplicationController
   before_action :authenticate_user!
   def show
     @repository = current_user.repositories.find(params[:repository_id])

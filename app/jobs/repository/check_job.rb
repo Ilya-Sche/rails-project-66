@@ -17,6 +17,7 @@ class Repository::CheckJob < ApplicationJob
 
       Rails.logger.error("Error in Repository::CheckJob: #{e.message}")
     end
+    send_linter_report_to_user(@repository, @check)
   end
 
   def fetch_commit(repository)
@@ -36,8 +37,6 @@ class Repository::CheckJob < ApplicationJob
     else
       run_eslint(repo_path)
     end
-    rubocop_report = ApplicationContainer[:rubocop].call(@repository.full_name)
-    rubocop_report.run_rubocop
 
     cleanup_repo(repo_path)
 
@@ -52,6 +51,7 @@ class Repository::CheckJob < ApplicationJob
 
   def clone_repo
     repo_path = Rails.root.join('tmp', 'repos', @repository.full_name)
+
     ApplicationContainer[:open3].capture3("git clone #{@repository.clone_url} #{repo_path}")
     repo_path
   end
@@ -91,8 +91,6 @@ class Repository::CheckJob < ApplicationJob
   end
 
   def run_eslint(repo_path)
-    @errors = []
-
     command = "node_modules/eslint/bin/eslint.js #{repo_path} --format json --config .eslintrc.json --no-eslintrc"
     stdout, _stderr = ApplicationContainer[:open3].capture3("sh -c '#{command}'")
 
@@ -109,17 +107,15 @@ class Repository::CheckJob < ApplicationJob
         }
 
         @check.linter_errors.create(error)
-
-        @errors << error
       end
     end
-
-    @errors
   end
 
-  def send_linter_report_to_user(user_email, repo_path)
-    file_path = Rails.root.join("#{repo_path}/rubocop_report.json")
-    RubocopMailer.send_rubocop_report(user_email, file_path).deliver_now
+  def send_linter_report_to_user(repository, check)
+    repository_id = repository.id
+    check_id = check.id
+    user_email = repository.user.email
+    RubocopMailer.send_rubocop_report(user_email, repository_id, check_id).deliver_now
   end
 
   def cleanup_repo(repo_path)

@@ -51,6 +51,7 @@ en:
     commit: "Commit id"
     name: "Name"
     language: "Language"
+    not_found: "Repository not found"
 
   check:
     created: "Check successfully created"
@@ -67,6 +68,11 @@ en:
     message: "Message"
     cop: "Rule identifier"
     string: "String and symbol"
+    report_link: "See the Rubocop report by link: "
   errors:
     count: "Errors count"
+  webhook:
+    success: "Webhook processed successfully"
+  event:
+    unsupported: "Unsupported event"
 

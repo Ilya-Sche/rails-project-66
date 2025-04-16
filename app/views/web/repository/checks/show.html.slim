@@ -19,7 +19,7 @@
 
   p
   strong = "#{t('repository.commit')} :"
-  span(style='margin-left: 10px; font-weight: normal;') = link_to @check.commit_id, "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}"
+  span(style='margin-left: 10px; font-weight: normal;') = link_to @check.commit_id, @check.commit_link
 
   .container.border.p-4.rounded.mt-4
     table.table
