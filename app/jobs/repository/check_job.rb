@@ -16,7 +16,6 @@ class Repository::CheckJob < ApplicationJob
       @check.update(passed: false)
 
       Rails.logger.error("Error in Repository::CheckJob: #{e.message}")
-      Rails.logger.error("Backtrace: #{e.backtrace}")
     end
     send_linter_report_to_user(@repository, @check)
   end
