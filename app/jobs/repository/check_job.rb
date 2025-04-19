@@ -73,16 +73,9 @@ class Repository::CheckJob < ApplicationJob
   end
 
   def parse_rubocop_output(stdout)
-    Rails.logger.info('Parsing RuboCop JSON output')
     @errors = []
 
-    begin
-      json_output = JSON.parse(stdout)
-    rescue JSON::ParserError => e
-      Rails.logger.error("Failed to parse RuboCop output: #{e.message}")
-      Rails.logger.error("Raw RuboCop stdout: #{json_output.inspect}")
-      raise
-    end
+    json_output = JSON.parse(stdout)
 
     json_output['files'].each do |file|
       file['offenses'].each do |offense|
