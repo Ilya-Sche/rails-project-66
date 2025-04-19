@@ -80,7 +80,7 @@ class Repository::CheckJob < ApplicationJob
       json_output = JSON.parse(stdout)
     rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse RuboCop output: #{e.message}")
-      Rails.logger.error("Raw RuboCop stdout: #{stdout.inspect}")
+      Rails.logger.error("Raw RuboCop stdout: #{json_output.inspect}")
       raise
     end
 
